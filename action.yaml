@@ -1,0 +1,11 @@
+name: 'MicroK8s Action'
+description: 'Run a MicroK8s Kubernetes cluster in your GitHub Action'
+author: "balchua"
+inputs:
+  channel:  # id of input
+    description: 'The MicroK8s Channel to use.  More information here https://microk8s.io/docs/setting-snap-channel'
+    required: true
+    default: 'latest/stable'
+runs:
+  using: 'node12'
+  main: 'lib/index.ts'
