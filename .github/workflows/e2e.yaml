@@ -9,7 +9,7 @@ jobs:
     - uses: balchua/microk8s-actions@master
       with:
         channel: 'latest/stable'    
-    - name: Install MicroK8s
+    - name: Test MicroK8s
       id: microk8s
       run: |
         kubectl get no
