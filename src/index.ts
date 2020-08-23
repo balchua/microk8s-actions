@@ -48,6 +48,7 @@ function enableOrDisableRbac(rbac: string) {
     console.log("Start enabling RBAC.");
     waitForReadyState()
     sh.exec("sudo microk8s enable rbac");
+    waitForReadyState()
   }
 
 }
@@ -57,6 +58,7 @@ function enableOrDisableDns(dns: string) {
     console.log("Start enabling dns.");
     waitForReadyState()
     sh.exec("sudo microk8s enable dns");
+    waitForReadyState()
   }
 
 }
