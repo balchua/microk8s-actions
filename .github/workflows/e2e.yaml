@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-    - uses: balchua/microk8s-actions@master
+    - uses: balchua/microk8s-actions@v0.1.0
       with:
-        channel: 'latest/edge/ha-preview'
+        channel: '1.18/stable'
         rbac: 'true'
         dns: 'true'
     - name: Test MicroK8s
@@ -16,4 +16,6 @@ jobs:
       run: |
         kubectl get no
         kubectl get pods -A
+        sleep 20s
+        kubectl get pods -A -o wide
         
