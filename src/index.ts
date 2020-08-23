@@ -34,15 +34,18 @@ function prepareUserEnv() {
   // Create microk8s group
   console.log("creating microk8s group.");
   sh.exec("sudo usermod -a -G microk8s $USER");
+  console.log("creating default kubeconfig location.");
   sh.exec("mkdir -p '$HOME/.kube/'")
+  console.log("Generating kubeconfig file to default location.");
   sh.exec("sudo microk8s kubectl config view --raw > $HOME/.kube/config")
-  sh.exec("sudo chown -f -R runner $HOME/.kube");
+  console.log("Change default location ownership.");
+  sh.exec("sudo chown -f -R $USER $HOME/.kube/");
 }
 
 function enableOrDisableRbac(rbac: string) {
   // Enabling RBAC
-  console.log("enabling rbac.");
   if (rbac.toLowerCase() === "true") {
+    console.log("Start enabling RBAC.");
     waitForReadyState()
     sh.exec("sudo microk8s enable rbac");
   }
@@ -50,9 +53,8 @@ function enableOrDisableRbac(rbac: string) {
 }
 
 function enableOrDisableDns(dns: string) {
-  // Enabling RBAC
-  console.log("enabling dns.");
   if (dns.toLowerCase() === "true") {
+    console.log("Start enabling dns.");
     waitForReadyState()
     sh.exec("sudo microk8s enable dns");
   }
