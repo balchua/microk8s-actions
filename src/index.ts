@@ -35,7 +35,7 @@ function prepareUserEnv() {
   console.log("creating microk8s group.");
   sh.exec("sudo usermod -a -G microk8s $USER");
   console.log("creating default kubeconfig location.");
-  sh.exec("mkdir -p '$HOME/.kube/'")
+  sh.exec("mkdir -p '/home/runner/.kube/'")
   console.log("Generating kubeconfig file to default location.");
   sh.exec("sudo microk8s kubectl config view --raw > $HOME/.kube/config")
   console.log("Change default location ownership.");
