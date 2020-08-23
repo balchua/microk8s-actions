@@ -1,3 +1,4 @@
+name: Test Microk8s
 on: [push]
 
 jobs:
