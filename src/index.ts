@@ -3,20 +3,15 @@ import * as sh from 'shelljs';
 
 
 async function run() {
-  try {
-    let channel = core.getInput("channel");
-    console.log("creating microk8s group.");
-    console.log("install microk8s..")
-    sh.exec("sudo snap install microk8s --classic --channel=" + channel );
 
-    waitForReadyState();
-    prepareUserEnv();
+  let channel = core.getInput("channel");
 
-    sh.exec("sudo snap instal kubectl --classic");
+  console.log("install microk8s..")
+  sh.exec("sudo snap install microk8s --classic --channel=" + channel );
 
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+  waitForReadyState();
+  prepareUserEnv();
+
 }
 
 async function waitForReadyState() {
@@ -35,6 +30,7 @@ async function waitForReadyState() {
   
 function prepareUserEnv() {
   // Create microk8s group
+  console.log("creating microk8s group.");
   sh.exec("sudo usermod -a -G microk8s runner");
   sh.exec("mkdir -p /home/runner/.kube")
   sh.exec("sudo microk8s kubectl config view --raw > /home/runner/.kube/config")

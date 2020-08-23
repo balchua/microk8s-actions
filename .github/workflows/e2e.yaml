@@ -12,5 +12,6 @@ jobs:
     - name: Test MicroK8s
       id: microk8s
       run: |
+        which kubectl
         kubectl get no
         
