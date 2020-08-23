@@ -12,5 +12,5 @@ jobs:
     - name: Install MicroK8s
       id: microk8s
       run: |
-        microk8s kubectl get no
+        kubectl get no
         

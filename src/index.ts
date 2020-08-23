@@ -37,7 +37,8 @@ async function prepareUserEnv() {
   // Create microk8s group
   await exec.exec("sudo",["usermod", "-a","-G","microk8s", "runner"]);
   await exec.exec("mkdir -p", ["/home/runner/.kube"])
-  await exec.exec("sudo ", ["chown","-f", "-R", "runner", "~/.kube"]);
+  await exec.exec("sudo",["microk8s", "kubectl config view --raw > /home/runner/.kube/config"])
+  await exec.exec("sudo ", ["chown","-f", "-R", "runner", "home/runner/.kube"]);
 }
 
 function delay(ms: number)
