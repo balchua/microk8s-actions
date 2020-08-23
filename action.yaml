@@ -8,4 +8,4 @@ inputs:
     default: 'latest/stable'
 runs:
   using: 'node12'
-  main: 'lib/index.ts'
+  main: 'lib/index.js'
