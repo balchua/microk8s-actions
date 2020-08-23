@@ -5,6 +5,8 @@ import * as exec from '@actions/exec';
 async function run() {
   try {
     let channel = core.getInput("channel");
+    console.log("creating microk8s group.");
+    await exec.exec("sudo", ["groupadd microk8s"]);
     console.log("install microk8s..")
     await exec.exec("sudo", ["snap", "install", "microk8s", "--channel=" + channel, "--classic"]);
     await exec.exec("sudo", ["microk8s", "status", "--wait-ready"]);
