@@ -8,13 +8,12 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@master
       with:
-        channel: 'latest/candidate'
-        rbac: 'false'
+        channel: 'latest/edge/ha-preview'
+        rbac: 'true'
         dns: 'true'
     - name: Test MicroK8s
       id: microk8s
       run: |
-        which kubectl
         kubectl get no
         kubectl get pods -A
         
