@@ -12,7 +12,7 @@ async function run() {
     waitForReadyState();
     prepareUserEnv();
 
-    await exec.exec("alias",["kubectl='microk8s kubectl`"]);
+    await exec.exec("sudo", ["snap", "install", "kubectl", "--classic"]);
 
   } catch (error) {
     core.setFailed(error.message);
@@ -23,7 +23,9 @@ async function waitForReadyState() {
   let ready = false;
   while (!ready) {
     try{
+      await delay(2000);
       await exec.exec("sudo", ["microk8s", "status", "--wait-ready"]);
+      ready = true;
       break;
     } catch (err) {
       console.log("microk8s not yet ready.");
@@ -34,8 +36,13 @@ async function waitForReadyState() {
 async function prepareUserEnv() {
   // Create microk8s group
   await exec.exec("sudo",["usermod", "-a","-G","microk8s", "runner"]);
-  await exec.exec("mkdir", ["$HOME/.kube"])
+  await exec.exec("mkdir -p", ["/home/runner/.kube"])
   await exec.exec("sudo ", ["chown","-f", "-R", "runner", "~/.kube"]);
+}
+
+function delay(ms: number)
+{
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 run();
