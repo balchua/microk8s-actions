@@ -21,13 +21,11 @@ async function run() {
 async function waitForReadyState() {
   let ready = false;
   while (!ready) {
-    try{
-      await delay(2000);
-      sh.exec("sudo microk8s status --wait-ready");
+    await delay(2000);
+    let code = sh.exec("sudo microk8s status --wait-ready", { silent: true }).code;
+    if (code === 0) {
       ready = true;
       break;
-    } catch (err) {
-      console.log("microk8s not yet ready.");
     }
   }  
 }
@@ -35,10 +33,11 @@ async function waitForReadyState() {
 function prepareUserEnv() {
   // Create microk8s group
   console.log("creating microk8s group.");
-  sh.exec("sudo usermod -a -G microk8s runner");
-  sh.exec("mkdir -p /home/runner/.kube")
-  sh.exec("sudo microk8s kubectl config view --raw > /home/runner/.kube/config")
-  sh.exec("sudo  chown -f -R runner home/runner/.kube");
+  sh.exec("sudo groupadd microk8s");
+  sh.exec("sudo usermod -a -G microk8s $USER");
+  sh.mkdir('-p', '$HOME/.kube')
+  sh.exec("sudo microk8s kubectl config view --raw > $HOME/.kube/config")
+  sh.exec("sudo  chown -f -R runner $HOME/.kube");
 }
 
 function enableOrDisableRbac(rbac: string) {
@@ -46,7 +45,7 @@ function enableOrDisableRbac(rbac: string) {
   console.log("enabling rbac.");
   if (rbac.toLowerCase() === "true") {
     waitForReadyState()
-    sh.exec("microk8s enable rbac");
+    sh.exec("sudo microk8s enable rbac");
   }
 
 }
@@ -56,7 +55,7 @@ function enableOrDisableDns(dns: string) {
   console.log("enabling dns.");
   if (dns.toLowerCase() === "true") {
     waitForReadyState()
-    sh.exec("microk8s enable dns");
+    sh.exec("sudo microk8s enable dns");
   }
 
 }
