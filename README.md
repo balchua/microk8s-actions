@@ -1,6 +1,6 @@
 # MicroK8s actions
 
-![](assets/microk8s-image.png | width=100)
+<img src="assets/microk8s-image.png" width="200" />
 
 MicroK8s is Lightweight and pure upstream K8s.  The smallest, simplest, pure production K8s.  For clusters, laptops, IoT and Edge, on Intel and ARM.
 
