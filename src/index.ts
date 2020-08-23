@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import * as exec from '@actions/exec';
+import * as sh from 'shelljs';
 
 
 async function run() {
@@ -7,12 +7,12 @@ async function run() {
     let channel = core.getInput("channel");
     console.log("creating microk8s group.");
     console.log("install microk8s..")
-    await exec.exec("sudo", ["snap", "install", "microk8s", "--channel=" + channel, "--classic"]);
+    sh.exec("sudo snap install microk8s --classic --channel=" + channel );
 
     waitForReadyState();
     prepareUserEnv();
 
-    await exec.exec("sudo", ["snap", "install", "kubectl", "--classic"]);
+    sh.exec("sudo snap instal kubectl --classic");
 
   } catch (error) {
     core.setFailed(error.message);
@@ -24,7 +24,7 @@ async function waitForReadyState() {
   while (!ready) {
     try{
       await delay(2000);
-      await exec.exec("sudo", ["microk8s", "status", "--wait-ready"]);
+      sh.exec("sudo microk8s status --wait-ready");
       ready = true;
       break;
     } catch (err) {
@@ -33,13 +33,12 @@ async function waitForReadyState() {
   }  
 }
   
-async function prepareUserEnv() {
+function prepareUserEnv() {
   // Create microk8s group
-  await exec.exec("sudo",["usermod", "-a","-G","microk8s", "runner"]);
-  await exec.exec("mkdir -p", ["/home/runner/.kube"])
-  await exec.exec("sudo",["microk8s","kubectl", "config", "view", "--raw"])
-  await exec.exec("sudo",["microk8s","kubectl", "config", "view", "--raw", ">", "/home/runner/.kube/config"])
-  await exec.exec("sudo ", ["chown","-f", "-R", "runner", "home/runner/.kube"]);
+  sh.exec("sudo usermod -a -G microk8s runner");
+  sh.exec("mkdir -p /home/runner/.kube")
+  sh.exec("sudo microk8s kubectl config view --raw > /home/runner/.kube/config")
+  sh.exec("sudo  chown -f -R runner home/runner/.kube");
 }
 
 function delay(ms: number)
