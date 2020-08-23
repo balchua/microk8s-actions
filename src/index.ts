@@ -12,6 +12,8 @@ async function run() {
     
     exec.exec("microk8s", ["status", "--wait-ready"]);
 
+    exec.exec("alias",["kubectl='microk8s kubectl`"]);
+
   } catch (error) {
     core.setFailed(error.message);
   }
