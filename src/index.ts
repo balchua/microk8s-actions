@@ -10,10 +10,7 @@ async function run() {
     await exec.exec("sudo", ["snap", "install", "microk8s", "--channel=" + channel, "--classic"]);
 
     waitForReadyState();
-    // Create microk8s group
-    await exec.exec("sudo",["usermod", "-a","-G","microk8s", "runner"]);
-    await exec.exec("sudo ", ["chown","-f", "-R", "runner", "~/.kube"]);
-    
+    prepareUserEnv();
 
     await exec.exec("alias",["kubectl='microk8s kubectl`"]);
 
@@ -27,13 +24,18 @@ async function waitForReadyState() {
   while (!ready) {
     try{
       await exec.exec("sudo", ["microk8s", "status", "--wait-ready"]);
-      ready = true;
+      break;
     } catch (err) {
       console.log("microk8s not yet ready.");
     }
   }  
+}
   
-  
+async function prepareUserEnv() {
+  // Create microk8s group
+  await exec.exec("sudo",["usermod", "-a","-G","microk8s", "runner"]);
+  await exec.exec("mkdir", ["$HOME/.kube"])
+  await exec.exec("sudo ", ["chown","-f", "-R", "runner", "~/.kube"]);
 }
 
 run();
