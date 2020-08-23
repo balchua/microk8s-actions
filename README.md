@@ -2,7 +2,7 @@
 
 This installs MicroK8s using Github Actions.  
 
-** Only works on Linux machines. **
+**Only works on Linux machines.**
 
 This Github Actions enables one to test their applications on multiple Kubernetes versions by following MicroK8s channels.
 
@@ -10,15 +10,15 @@ This Github Actions enables one to test their applications on multiple Kubernete
 
 ### `channel`
 
-** Required **  This is the MicroK8s channel to choose.  Example: `latest/stable` or `1.18/stable` or `latest/edge/ha-preview`
+**Required**  This is the MicroK8s channel to choose.  Example: `latest/stable` or `1.18/stable` or `latest/edge/ha-preview`
 
 ### `rbac`
 
-** Required **  Since MicroK8s does not enable `RBAC` by default, user can choose whether they want to enable rbac or not.
+**Required**  Since MicroK8s does not enable `RBAC` by default, user can choose whether they want to enable rbac or not.
 
 ### `dns`
 
-** Required **  Since MicroK8s does not enable `dns` by default, user can choose whether they want to enable CoreDNS or not.
+**Required**  Since MicroK8s does not enable `dns` by default, user can choose whether they want to enable CoreDNS or not.
 
 ## Example Usage:
 
