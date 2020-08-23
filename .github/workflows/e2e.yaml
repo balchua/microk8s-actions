@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@master
       with:
-        channel: 'latest/stable'    
+        channel: 'latest/candidate'    
     - name: Test MicroK8s
       id: microk8s
       run: |
