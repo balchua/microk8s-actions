@@ -5,12 +5,16 @@ import * as sh from 'shelljs';
 async function run() {
 
   let channel = core.getInput("channel");
+  let rbac = core.getInput("rbac");
+  let dns = core.getInput("dns");
 
   console.log("install microk8s..")
   sh.exec("sudo snap install microk8s --classic --channel=" + channel );
 
   waitForReadyState();
   prepareUserEnv();
+  enableOrDisableRbac(rbac);
+  enableOrDisableDns(dns);
 
 }
 
@@ -35,6 +39,26 @@ function prepareUserEnv() {
   sh.exec("mkdir -p /home/runner/.kube")
   sh.exec("sudo microk8s kubectl config view --raw > /home/runner/.kube/config")
   sh.exec("sudo  chown -f -R runner home/runner/.kube");
+}
+
+function enableOrDisableRbac(rbac: string) {
+  // Enabling RBAC
+  console.log("enabling rbac.");
+  if (rbac.toLowerCase() === "true") {
+    waitForReadyState()
+    sh.exec("microk8s enable rbac");
+  }
+
+}
+
+function enableOrDisableDns(dns: string) {
+  // Enabling RBAC
+  console.log("enabling dns.");
+  if (dns.toLowerCase() === "true") {
+    waitForReadyState()
+    sh.exec("microk8s enable dns");
+  }
+
 }
 
 function delay(ms: number)
