@@ -6,11 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
+    - uses: balchua/microk8s-actions@master
+      with:
+        channel: 'latest/stable'    
     - name: Install MicroK8s
       id: microk8s
-      uses: balchua/microk8s-actions@master
-      with:
-        channel: 'latest/stable'
       run: |
         microk8s kubectl get no
         
