@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-    - uses: balchua/microk8s-actions@release/v0.1
+    - uses: balchua/microk8s-actions@release/v0.1.2
       with:
         channel: '1.18/stable'
         rbac: 'true'
