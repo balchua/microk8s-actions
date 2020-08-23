@@ -1,8 +1,14 @@
 # MicroK8s actions
 
+![MicroK8s](assets/microk8s-image.png =100x20)
+
+MicroK8s is Lightweight and pure upstream K8s.  The smallest, simplest, pure production K8s.  For clusters, laptops, IoT and Edge, on Intel and ARM.
+
 This installs MicroK8s using Github Actions.  
 
-**Only works on Linux machines.**
+More information about [MicroK8s](https://microk8s.io/)
+
+This Github Action **only works on Linux machines.**
 
 This Github Actions enables one to test their applications on multiple Kubernetes versions by following MicroK8s channels.
 
