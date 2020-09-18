@@ -14,6 +14,10 @@ inputs:
     description: "Enable coredns."
     required: true
     default: "false"
+  storage:
+    description: "Enable storage"
+    required: true
+    default: "false"
 
 runs:
   using: 'node12'

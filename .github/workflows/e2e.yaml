@@ -11,6 +11,7 @@ jobs:
         channel: '1.18/stable'
         rbac: 'true'
         dns: 'true'
+        storage: 'true'
     - name: Test MicroK8s
       id: microk8s
       run: |

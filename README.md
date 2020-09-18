@@ -26,6 +26,10 @@ This Github Actions enables one to test their applications on multiple Kubernete
 
 **Required**  Since MicroK8s does not enable `dns` by default, user can choose whether they want to enable CoreDNS or not.
 
+### `storage`
+
+**Required** Since MicroK8s does not enable `storage` by default, user can choose whether they want to enable local hostPath storage or not.
+
 ## Example Usage:
 
 Below shows how one can use the Action.
@@ -44,6 +48,7 @@ jobs:
         channel: '1.18/stable'
         rbac: 'true'
         dns: 'true'
+        storage: 'true'
     - name: Test MicroK8s
       id: myactions
       run: |
