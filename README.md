@@ -54,5 +54,14 @@ jobs:
       run: |
         kubectl get no
         kubectl get pods -A -o wide
+
+        # wait for storage pod to be ready
+        kubectl -n kube-system wait --for=condition=ready pod -l k8s-app=hostpath-provisioner --timeout=10s
+        storage_ready=$?
+
+        if [$storage_ready -ne 0 ]; then
+          echo "Error storage not ready."
+          exit $storage_ready
+        fi 
         
 ```
