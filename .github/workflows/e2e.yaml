@@ -15,6 +15,7 @@ jobs:
     - name: Test MicroK8s
       id: microk8s
       run: |
+        set -ex
         kubectl get no
         kubectl get pods -A -o wide
 
@@ -23,7 +24,7 @@ jobs:
         kubectl -n kube-system wait --for=condition=ready pod -l k8s-app=hostpath-provisioner --timeout=10s
         storage_ready=$?
 
-        if [$storage_ready -ne 0 ]; then
+        if [ $storage_ready -ne 0 ]; then
           echo "Error storage not ready."
           exit $storage_ready
         fi 

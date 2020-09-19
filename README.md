@@ -54,6 +54,5 @@ jobs:
       run: |
         kubectl get no
         kubectl get pods -A -o wide
-
         
 ```
