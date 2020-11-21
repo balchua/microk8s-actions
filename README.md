@@ -43,12 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-    - uses: balchua/microk8s-actions@release/v0.1.3
+    - uses: balchua/microk8s-actions@release/v0.1.4
       with:
         channel: '1.19/stable'
         rbac: 'true'
         dns: 'true'
         storage: 'true'
+        addons: '["registry", "metrics-server"]'
     - name: Test MicroK8s
       id: myactions
       run: |
