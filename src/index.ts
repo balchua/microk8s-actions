@@ -95,7 +95,7 @@ function enableAddons(addons: string[]){
 }
 
 async function waitTillApiServerIsReady(startTimeInMillis: number) {
-  let endTimeInMillis = startTimeInMillis + 140000;
+  let endTimeInMillis = startTimeInMillis + 80000;
   let elapsed=Date.now();
   
   if (endTimeInMillis > elapsed){
