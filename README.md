@@ -20,15 +20,27 @@ This Github Actions enables one to test their applications on multiple Kubernete
 
 ### `rbac`
 
-**Required**  Since MicroK8s does not enable `RBAC` by default, user can choose whether they want to enable rbac or not.
+**Deprecated in favor of the new argument `addons`**
+
+**Optional**  Since MicroK8s does not enable `RBAC` by default, user can choose whether they want to enable rbac or not.
 
 ### `dns`
 
-**Required**  Since MicroK8s does not enable `dns` by default, user can choose whether they want to enable CoreDNS or not.
+**Deprecated in favor of the new argument `addons`**
+
+**Optional**  Since MicroK8s does not enable `dns` by default, user can choose whether they want to enable CoreDNS or not.
 
 ### `storage`
 
-**Required** Since MicroK8s does not enable `storage` by default, user can choose whether they want to enable local hostPath storage or not.
+**Deprecated in favor of the new argument `addons`**
+
+**Optional** Since MicroK8s does not enable `storage` by default, user can choose whether they want to enable local hostPath storage or not.
+
+### `addons`
+
+New from `v0.2.0`
+
+**Optional** a JSON array containing the MicroK8s addon to enable.  Example `addons: "['prometheus','metrics-server','linkerd']"`
 
 ## Example Usage:
 
@@ -43,13 +55,13 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-    - uses: balchua/microk8s-actions@release/v0.1.4
+    - uses: balchua/microk8s-actions@v0.2.0
       with:
         channel: '1.19/stable'
         rbac: 'true'
         dns: 'true'
         storage: 'true'
-        addons: '["registry", "metrics-server"]'
+        addons: '["dns", "rbac", "storage", "registry", "metrics-server"]'
     - name: Test MicroK8s
       id: myactions
       run: |

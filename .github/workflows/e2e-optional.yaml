@@ -9,7 +9,7 @@ jobs:
     - uses: balchua/microk8s-actions@v0.2.0
       with:
         channel: '1.19/stable'
-        storage: 'true'
+        addons: '["storage"]'
     - name: Test MicroK8s
       id: microk8s
       run: |
