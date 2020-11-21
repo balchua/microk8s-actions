@@ -43,12 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-    - uses: balchua/microk8s-actions@release/v0.1.3
+    - uses: balchua/microk8s-actions@release/v0.1.4
       with:
         channel: '1.19/stable'
         rbac: 'true'
         dns: 'true'
         storage: 'true'
+        addons: '["registry", "metrics-server"]'
     - name: Test MicroK8s
       id: myactions
       run: |
@@ -56,3 +57,12 @@ jobs:
         kubectl get pods -A -o wide
         
 ```
+
+### Building
+
+The main program is a Typescript, located in [src/index.ts](src/index.ts).  Before pushing the code to Github, you should compile the source to ES6.
+
+```shell
+$ npm run build
+```
+

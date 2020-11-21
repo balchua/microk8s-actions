@@ -1,4 +1,4 @@
-name: Test Microk8s
+name: Test Microk8s with optional addons
 on: [push]
 
 jobs:
@@ -9,10 +9,7 @@ jobs:
     - uses: balchua/microk8s-actions@feature/addons
       with:
         channel: '1.19/stable'
-        rbac: 'true'
-        dns: 'true'
         storage: 'true'
-        addons: '["registry", "metrics-server"]'
     - name: Test MicroK8s
       id: microk8s
       run: |

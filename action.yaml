@@ -18,6 +18,10 @@ inputs:
     description: "Enable storage"
     required: true
     default: "false"
+  addons:
+    description: "A JSON array of addons to enable"    
+    required: false
+    default: "[]"
 
 runs:
   using: 'node12'
