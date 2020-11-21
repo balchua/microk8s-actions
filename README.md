@@ -56,3 +56,12 @@ jobs:
         kubectl get pods -A -o wide
         
 ```
+
+### Building
+
+The main program is a Typescript, located in [src/index.ts](src/index.ts).  Before pushing the code to Github, you should compile the source to ES6.
+
+```shell
+$ npm run build
+```
+

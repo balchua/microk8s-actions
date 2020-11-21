@@ -12,8 +12,7 @@ jobs:
         rbac: 'true'
         dns: 'true'
         storage: 'true'
-        addons: -|
-          ["registry", "metrics-server"]
+        addons: '["registry", "metrics-server"]'
     - name: Test MicroK8s
       id: microk8s
       run: |
@@ -23,7 +22,7 @@ jobs:
 
 
         # wait for storage pod to be ready
-        kubectl -n kube-system wait --for=condition=ready pod -l k8s-app=hostpath-provisioner --timeout=10s
+        kubectl -n kube-system wait --for=condition=ready pod -l k8s-app=hostpath-provisioner --timeout=60s
         storage_ready=$?
 
         if [ $storage_ready -ne 0 ]; then
