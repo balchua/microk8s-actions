@@ -20,6 +20,7 @@ jobs:
         kubectl get no
         kubectl get pods -A -o wide
 
+        sleep 20s
 
         # wait for storage pod to be ready
         kubectl -n kube-system wait --for=condition=ready pod -l k8s-app=hostpath-provisioner --timeout=60s

@@ -21,6 +21,7 @@ async function run() {
   if (addons) {
     enableAddons(JSON.parse(addons));
   }
+  waitForReadyState()
   
 }
 
@@ -70,9 +71,9 @@ function enableOrDisableStorage(storage: string) {
 
 function enableAddon(addon: string) {
   if (addon) {
-    console.log('Start enabling ${addon}.');
+    console.log('Start enabling %s', addon);
     waitForReadyState()
-    sh.exec('sudo microk8s enable ${addon}');
+    sh.exec('sudo microk8s enable %s', addon);
     waitForReadyState()
   }
 }
@@ -85,7 +86,7 @@ function delay(ms: number)
 function enableAddons(addons: string[]){
   
   addons.forEach( (addon) => {
-      
+      enableAddon(addon);
   });
     
 }
