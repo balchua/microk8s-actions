@@ -22,7 +22,7 @@ async function run() {
     enableAddons(JSON.parse(addons));
   }
   waitForReadyState()
-  
+
 }
 
 async function waitForReadyState() {
@@ -73,7 +73,7 @@ function enableAddon(addon: string) {
   if (addon) {
     console.log('Start enabling %s', addon);
     waitForReadyState()
-    sh.exec('sudo microk8s enable %s', addon);
+    sh.exec('sudo microk8s enable ' + addon);
     waitForReadyState()
   }
 }
