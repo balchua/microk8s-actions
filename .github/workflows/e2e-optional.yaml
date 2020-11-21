@@ -14,7 +14,6 @@ jobs:
       id: microk8s
       run: |
         set -ex
-        sleep 60s
         kubectl get no
         kubectl get pods -A -o wide
 

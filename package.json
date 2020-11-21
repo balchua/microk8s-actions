@@ -1,15 +1,15 @@
 {
   "name": "actions-microk8s",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "",
-  "main": "lib/main.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "@balchu",
+  "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.4",
     "@actions/exec": "^1.0.4",

@@ -13,16 +13,19 @@ async function run() {
   console.log("install microk8s..")
   sh.exec("sudo snap install microk8s --classic --channel=" + channel );
 
+  let startTimeInMillis=Date.now();
+  
   waitForReadyState();
   prepareUserEnv();
   enableOrDisableRbac(rbac);
   enableOrDisableDns(dns);
   enableOrDisableStorage(storage);
+
   if (addons) {
     enableAddons(JSON.parse(addons));
   }
-  await delay(20)
-  waitForReadyState()
+
+  waitTillApiServerIsReady(startTimeInMillis)
 }
 
 async function waitForReadyState() {
@@ -89,6 +92,17 @@ function enableAddons(addons: string[]){
       enableAddon(addon);
   });
     
+}
+
+async function waitTillApiServerIsReady(startTimeInMillis: number) {
+  let endTimeInMillis = startTimeInMillis + 140000;
+  let elapsed=Date.now();
+  
+  if (endTimeInMillis > elapsed){
+    await delay(endTimeInMillis - elapsed)
+    waitForReadyState()
+  }
+  
 }
 
 run();
