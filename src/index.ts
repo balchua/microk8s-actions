@@ -8,6 +8,7 @@ async function run() {
   let rbac = core.getInput("rbac");
   let dns = core.getInput("dns");
   let storage = core.getInput("storage");
+  let addons = core.getInput("addons");
 
   console.log("install microk8s..")
   sh.exec("sudo snap install microk8s --classic --channel=" + channel );
@@ -17,7 +18,10 @@ async function run() {
   enableOrDisableRbac(rbac);
   enableOrDisableDns(dns);
   enableOrDisableStorage(storage);
-
+  if (addons) {
+    enableAddons(JSON.parse(addons));
+  }
+  
 }
 
 async function waitForReadyState() {
@@ -47,37 +51,43 @@ function prepareUserEnv() {
 function enableOrDisableRbac(rbac: string) {
   // Enabling RBAC
   if (rbac.toLowerCase() === "true") {
-    console.log("Start enabling RBAC.");
-    waitForReadyState()
-    sh.exec("sudo microk8s enable rbac");
-    waitForReadyState()
+    enableAddon('rbac');
   }
 
 }
 
 function enableOrDisableDns(dns: string) {
   if (dns.toLowerCase() === "true") {
-    console.log("Start enabling dns.");
-    waitForReadyState()
-    sh.exec("sudo microk8s enable dns");
-    waitForReadyState()
+    enableAddon('dns');
   }
-
 }
 
 function enableOrDisableStorage(storage: string) {
   if (storage.toLowerCase() === "true") {
-    console.log("Start enabling storage.");
+    enableAddon('storage');
+  }
+}
+
+function enableAddon(addon: string) {
+  if (addon) {
+    console.log('Start enabling ${addon}.');
     waitForReadyState()
-    sh.exec("sudo microk8s enable storage");
+    sh.exec('sudo microk8s enable ${addon}');
     waitForReadyState()
   }
-
 }
 
 function delay(ms: number)
 {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function enableAddons(addons: string[]){
+  
+  addons.forEach( (addon) => {
+      
+  });
+    
 }
 
 run();

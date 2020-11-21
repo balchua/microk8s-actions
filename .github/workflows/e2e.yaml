@@ -12,6 +12,8 @@ jobs:
         rbac: 'true'
         dns: 'true'
         storage: 'true'
+        addons: -|
+          ["registry", "metrics-server"]
     - name: Test MicroK8s
       id: microk8s
       run: |
@@ -27,5 +29,5 @@ jobs:
         if [ $storage_ready -ne 0 ]; then
           echo "Error storage not ready."
           exit $storage_ready
-        fi 
+        fi
         
