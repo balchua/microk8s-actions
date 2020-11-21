@@ -58,9 +58,6 @@ jobs:
     - uses: balchua/microk8s-actions@v0.2.0
       with:
         channel: '1.19/stable'
-        rbac: 'true'
-        dns: 'true'
-        storage: 'true'
         addons: '["dns", "rbac", "storage", "registry", "metrics-server"]'
     - name: Test MicroK8s
       id: myactions
