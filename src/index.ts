@@ -21,8 +21,8 @@ async function run() {
   if (addons) {
     enableAddons(JSON.parse(addons));
   }
+  await delay(20)
   waitForReadyState()
-
 }
 
 async function waitForReadyState() {
