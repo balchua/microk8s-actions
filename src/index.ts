@@ -12,22 +12,27 @@ async function run() {
   sh.config.fatal = true;
   sh.config.verbose = true
 
-  console.log("install microk8s..")
-  sh.exec("sudo snap install microk8s --classic --channel=" + channel );
-
-  let startTimeInMillis=Date.now();
+  try {
+    console.log("install microk8s..")
+    sh.exec("sudo snap install microk8s --classic --channel=" + channel );
   
-  waitForReadyState();
-  prepareUserEnv();
-  enableOrDisableRbac(rbac);
-  enableOrDisableDns(dns);
-  enableOrDisableStorage(storage);
-
-  if (addons) {
-    enableAddons(JSON.parse(addons));
+    let startTimeInMillis=Date.now();
+    
+    waitForReadyState();
+    prepareUserEnv();
+    enableOrDisableRbac(rbac);
+    enableOrDisableDns(dns);
+    enableOrDisableStorage(storage);
+  
+    if (addons) {
+      enableAddons(JSON.parse(addons));
+    }
+  
+    waitTillApiServerIsReady(startTimeInMillis)
+  } catch (error) {
+    core.setFailed(error.message);
   }
 
-  waitTillApiServerIsReady(startTimeInMillis)
 }
 
 async function waitForReadyState() {
@@ -46,7 +51,7 @@ function prepareUserEnv() {
   // Create microk8s group
   console.log("creating microk8s group.");
   sh.exec("sudo usermod -a -G microk8s $USER");
-  sh.exec("newgrp");
+  sh.exec("newgrp -");
   console.log("creating default kubeconfig location.");
   sh.exec("mkdir -p '/home/runner/.kube/'")
   console.log("Generating kubeconfig file to default location.");
