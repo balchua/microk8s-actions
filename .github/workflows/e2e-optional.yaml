@@ -10,6 +10,8 @@ jobs:
       with:
         channel: '1.19/stable'
         addons: '["storage"]'
+    - name: Check User
+      run: id        
     - name: Test MicroK8s
       id: microk8s
       run: |
