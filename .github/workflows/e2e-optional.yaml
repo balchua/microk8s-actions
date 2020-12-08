@@ -1,21 +1,15 @@
-name: Test Microk8s with optional addons
+name: Test Microk8s with Kubeflow addon
 on: [push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: A job to install MicroK8s
+    name: Install MicroK8s
     steps:
     - uses: balchua/microk8s-actions@master
       with:
         channel: '1.19/stable'
         addons: '["storage","kubeflow"]'
-        
-    - name: Check User
-      run: |
-        id
-        sg microk8s -c 'microk8s status'
-
 
     - name: Test MicroK8s
       id: microk8s
