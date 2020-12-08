@@ -10,8 +10,13 @@ jobs:
       with:
         channel: '1.19/stable'
         addons: '["storage"]'
+
     - name: Check User
-      run: id        
+      run: |
+        su - $USER
+        id
+        microk8s status
+           
     - name: Test MicroK8s
       id: microk8s
       run: |
