@@ -92,6 +92,12 @@ To use `microk8s` commands for example: `microk8s status`, you should use `sudo`
    that newgrp creates. This doesn't happen with sg, so upon exit from a
    sg command you are returned to your previous group ID.
 
+## Kubeflow Addon
+
+You can use the `kubeflow` microk8s addon to test your ML.  Due to the size of the VM used by github actions the `KUBEFLOW_BUNDLE` used is `edge`.
+This is the appropriate bundle for low resource machines.
+
+For more information regarding kubeflow addon check this [link](https://microk8s.io/docs/addon-kubeflow)
 
 ## Building
 
