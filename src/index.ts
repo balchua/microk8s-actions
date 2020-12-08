@@ -82,7 +82,7 @@ function enableOrDisableStorage(storage: string) {
 
 function enableAddon(addon: string) {
   if (addon) {
-    sh.echo('Start enabling %s', addon);
+    sh.echo('Start enabling ' + addon);
     waitForReadyState()
     if (addon === "kubeflow") {
       sh.exec("sg microk8s -c 'microk8s enable kubeflow'")
