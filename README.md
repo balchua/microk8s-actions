@@ -1,5 +1,7 @@
 # MicroK8s actions
 
+![Test Microk8s](https://github.com/balchua/microk8s-actions/workflows/Test%20Microk8s/badge.svg)
+
 <img src="assets/microk8s-image.png" width="200" />
 
 MicroK8s is Lightweight and pure upstream K8s.  The smallest, simplest, pure production K8s.  For clusters, laptops, IoT and Edge, on Intel and ARM.
