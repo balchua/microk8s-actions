@@ -9,7 +9,7 @@ jobs:
     - uses: balchua/microk8s-actions@master
       with:
         channel: '1.19/stable'
-        addons: '["storage"]'
+        addons: '["storage","kubeflow"]'
         
     - name: Check User
       run: |
