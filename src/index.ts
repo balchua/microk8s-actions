@@ -13,7 +13,7 @@ async function run() {
   sh.config.verbose = true
 
   try {
-    console.log("install microk8s..")
+    sh.echo("install microk8s..")
     sh.exec("sudo snap install microk8s --classic --channel=" + channel );
   
     let startTimeInMillis=Date.now();
@@ -49,16 +49,15 @@ async function waitForReadyState() {
   
 function prepareUserEnv() {
   // Create microk8s group
-  console.log("creating microk8s group.");
+  sh.echo("creating microk8s group.");
   sh.exec("sudo usermod -a -G microk8s $USER");
-  sh.exec("newgrp -");
-  console.log("creating default kubeconfig location.");
+  sh.echo("creating default kubeconfig location.");
   sh.exec("mkdir -p '/home/runner/.kube/'")
-  console.log("Generating kubeconfig file to default location.");
+  sh.echo("Generating kubeconfig file to default location.");
   sh.exec("sudo microk8s kubectl config view --raw > $HOME/.kube/config")
-  console.log("Change default location ownership.");
+  sh.echo("Change default location ownership.");
   sh.exec("sudo chown -f -R $USER $HOME/.kube/");
-  sh.exec("sudo chmod go-rx $USER $HOME/.kube/");
+  sh.chmod("go-rx", "$HOME/.kube/");
 }
 
 function enableOrDisableRbac(rbac: string) {
@@ -83,11 +82,19 @@ function enableOrDisableStorage(storage: string) {
 
 function enableAddon(addon: string) {
   if (addon) {
-    console.log('Start enabling %s', addon);
+    sh.echo('Start enabling %s', addon);
     waitForReadyState()
-    sh.exec('sudo microk8s enable ' + addon);
+    if (addon === "kubeflow") {
+      sh.exec("sg microk8s -c 'microk8s enable kubeflow'")
+    } else {
+      sh.exec('sudo microk8s enable ' + addon);
+    }
     waitForReadyState()
   }
+}
+
+function enableKubeflow(addon: string) {
+
 }
 
 function delay(ms: number)
