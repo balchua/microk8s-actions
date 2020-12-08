@@ -85,7 +85,7 @@ function enableAddon(addon: string) {
     sh.echo('Start enabling ' + addon);
     waitForReadyState()
     if (addon === "kubeflow") {
-      sh.exec("sg microk8s -c 'microk8s enable kubeflow'")
+      sh.exec("sg microk8s -c 'KUBEFLOW_IGNORE_MIN_MEM=true microk8s enable kubeflow'")
     } else {
       sh.exec('sudo microk8s enable ' + addon);
     }
