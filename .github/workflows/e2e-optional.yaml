@@ -32,9 +32,9 @@ jobs:
           echo "Error storage not ready."
           exit $storage_ready
         fi
-        
+
     - name: Test MicroK8s commands
-      id: microk8s
+      id: microk8s-commands
       run: |
         set -ex
         echo "Executing microk8s status using sg command."
