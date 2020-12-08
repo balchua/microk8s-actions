@@ -18,6 +18,12 @@ This Github Actions enables one to test their applications on multiple Kubernete
 
 **Required**  This is the MicroK8s channel to choose.  Example: `latest/stable` or `1.18/stable` or `latest/edge/ha-preview`
 
+### `addons`
+
+New from `v0.2.0`
+
+**Optional** a JSON array containing the MicroK8s addon to enable.  Example `addons: "['prometheus','metrics-server','linkerd']"`
+
 ### `rbac`
 
 **Deprecated in favor of the new argument `addons`**
@@ -36,11 +42,7 @@ This Github Actions enables one to test their applications on multiple Kubernete
 
 **Optional** Since MicroK8s does not enable `storage` by default, user can choose whether they want to enable local hostPath storage or not.
 
-### `addons`
 
-New from `v0.2.0`
-
-**Optional** a JSON array containing the MicroK8s addon to enable.  Example `addons: "['prometheus','metrics-server','linkerd']"`
 
 ## Example Usage:
 
@@ -67,7 +69,31 @@ jobs:
         
 ```
 
-### Building
+To use `microk8s` commands for example: `microk8s status`, you should use `sudo` or `sg` command.
+
+```yaml
+    - name: Test MicroK8s commands
+      id: microk8s
+      run: |
+        set -ex
+        echo "Executing microk8s status using sg command."
+        sg microk8s -c 'microk8s status'
+        echo "Executing microk8s status using sudo command."
+        sudo microk8s status
+```
+
+`sg` commands will execute the command using the group specified.  Description taken from [here](https://man7.org/linux/man-pages/man1/sg.1.html#:~:text=The%20sg%20command%20works%20similar,multi%2Dword%20commands%20in%20quotes.)
+
+>  The sg command works similar to newgrp but accepts a command. The
+   command will be executed with the /bin/sh shell. With most shells you
+   may run sg from, you need to enclose multi-word commands in quotes.
+   Another difference between newgrp and sg is that some shells treat
+   newgrp specially, replacing themselves with a new instance of a shell
+   that newgrp creates. This doesn't happen with sg, so upon exit from a
+   sg command you are returned to your previous group ID.
+
+
+## Building
 
 The main program is a Typescript, located in [src/index.ts](src/index.ts).  Before pushing the code to Github, you should compile the source to ES6.
 

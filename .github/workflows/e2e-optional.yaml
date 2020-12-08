@@ -33,3 +33,11 @@ jobs:
           exit $storage_ready
         fi
         
+    - name: Test MicroK8s commands
+      id: microk8s
+      run: |
+        set -ex
+        echo "Executing microk8s status using sg command."
+        sg microk8s -c 'microk8s status'
+        echo "Executing microk8s status using sudo command."
+        sudo microk8s status        
