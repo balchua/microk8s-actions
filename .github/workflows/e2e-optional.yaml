@@ -10,15 +10,11 @@ jobs:
       with:
         channel: '1.19/stable'
         addons: '["storage"]'
-
-    - name: Change group
-      run: |
-        exec newgrp microk8s
         
     - name: Check User
       run: |
         id
-        microk8s status
+        sg microk8s -c 'microk8s status'
 
 
     - name: Test MicroK8s

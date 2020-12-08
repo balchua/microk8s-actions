@@ -11,15 +11,11 @@ jobs:
         channel: '1.19/stable'
         addons: '["rbac", "dns", "storage", "registry", "metrics-server"]'
 
-    - name: Change group
-      run: |
-        exec newgrp microk8s
-        
     - name: Check User
       run: |
         id
-        microk8s status
-
+        sg microk8s -c 'microk8s status'
+        
     - name: Test MicroK8s
       id: microk8s
       run: |
