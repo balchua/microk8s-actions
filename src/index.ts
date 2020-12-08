@@ -57,7 +57,7 @@ function prepareUserEnv() {
   sh.exec("sudo microk8s kubectl config view --raw > $HOME/.kube/config")
   sh.echo("Change default location ownership.");
   sh.exec("sudo chown -f -R $USER $HOME/.kube/");
-  sh.chmod("go-rx", "$HOME/.kube/");
+  sh.chmod("go-rx", "$HOME/.kube/config");
 }
 
 function enableOrDisableRbac(rbac: string) {
