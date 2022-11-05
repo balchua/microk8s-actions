@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import { exec } from '@actions/exec';
 import * as sh from 'shelljs';
 
 
@@ -11,114 +12,103 @@ async function run() {
   let addons = core.getInput("addons");
   sh.config.fatal = true;
   sh.config.verbose = true
+  let isStrict = isStrictMode(channel)
 
   try {
     sh.echo("install microk8s..")
-    sh.exec("sudo snap install microk8s --classic --channel=" + channel );
-  
-    let startTimeInMillis=Date.now();
-    
-    waitForReadyState();
-    prepareUserEnv();
-    enableOrDisableRbac(rbac);
-    enableOrDisableDns(dns);
-    enableOrDisableStorage(storage);
-  
+    executeCommand(isStrict, false, "snap install microk8s --classic --channel=" + channel)
+
+    let startTimeInMillis = Date.now();
+
+    waitForReadyState(isStrict);
+    prepareUserEnv(isStrict);
+
     if (addons) {
-      enableAddons(JSON.parse(addons));
+      enableAddons(JSON.parse(addons), isStrict);
     }
-  
-    waitTillApiServerIsReady(startTimeInMillis)
+
+    waitTillApiServerIsReady(startTimeInMillis, isStrict)
   } catch (error) {
     core.setFailed(error.message);
   }
 
 }
 
-async function waitForReadyState() {
+async function waitForReadyState(isStrict: boolean) {
   let ready = false;
   while (!ready) {
     await delay(2000);
-    let code = sh.exec("sudo microk8s status --wait-ready", { silent: true }).code;
+    let code = executeCommand(isStrict, true, "microk8s status --wait-ready");
     if (code === 0) {
       ready = true;
       break;
     }
-  }  
+  }
 }
-  
-function prepareUserEnv() {
+
+function prepareUserEnv(isStrict: boolean) {
   // Create microk8s group
   sh.echo("creating microk8s group.");
-  sh.exec("sudo usermod -a -G microk8s $USER");
+  if (!isStrict) {
+    executeCommand(false, false, "usermod -a -G microk8s $USER")
+  }
   sh.echo("creating default kubeconfig location.");
-  sh.exec("mkdir -p '/home/runner/.kube/'")
+  executeCommand(false, false, "mkdir -p '/home/runner/.kube/'")
   sh.echo("Generating kubeconfig file to default location.");
-  sh.exec("sudo microk8s kubectl config view --raw > $HOME/.kube/config")
+  executeCommand(isStrict, false, "microk8s kubectl config view --raw > $HOME/.kube/config")
   sh.echo("Change default location ownership.");
-  sh.exec("sudo chown -f -R $USER $HOME/.kube/");
-  sh.exec("chmod go-rx $HOME/.kube/config")
-}
-
-function enableOrDisableRbac(rbac: string) {
-  // Enabling RBAC
-  if (rbac.toLowerCase() === "true") {
-    enableAddon('rbac');
+  if (!isStrict) {
+    executeCommand(false, false, "chown -f -R $USER $HOME/.kube/")
+    executeCommand(false, false, "chmod go-rx $HOME/.kube/config")
   }
-
+  
 }
 
-function enableOrDisableDns(dns: string) {
-  if (dns.toLowerCase() === "true") {
-    enableAddon('dns');
-  }
-}
-
-function enableOrDisableStorage(storage: string) {
-  if (storage.toLowerCase() === "true") {
-    enableAddon('storage');
-  }
-}
-
-function enableAddon(addon: string) {
+function enableAddon(addon: string, isStrict: boolean) {
   if (addon) {
     sh.echo('Start enabling ' + addon);
-    waitForReadyState()
+    waitForReadyState(isStrict)
     if (addon === "kubeflow") {
-      sh.exec("sg microk8s -c 'KUBEFLOW_IGNORE_MIN_MEM=true KUBEFLOW_BUNDLE=edge microk8s enable kubeflow'")
+      sh.echo('kubeflow is no longer supported as a addon');
     } else {
-      sh.exec('sudo microk8s enable ' + addon);
+      executeCommand(isStrict, false, 'sudo microk8s enable ' + addon)
     }
-    waitForReadyState()
+    waitForReadyState(isStrict)
   }
 }
 
-function enableKubeflow(addon: string) {
-
-}
-
-function delay(ms: number)
-{
+function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function enableAddons(addons: string[]){
-  
-  addons.forEach( (addon) => {
-      enableAddon(addon);
+function enableAddons(addons: string[], isStrict: boolean) {
+  addons.forEach((addon) => {
+    enableAddon(addon, isStrict);
   });
-    
+
 }
 
-async function waitTillApiServerIsReady(startTimeInMillis: number) {
+async function waitTillApiServerIsReady(startTimeInMillis: number, isStrict: boolean) {
   let endTimeInMillis = startTimeInMillis + 80000;
-  let elapsed=Date.now();
-  
-  if (endTimeInMillis > elapsed){
+  let elapsed = Date.now();
+
+  if (endTimeInMillis > elapsed) {
     await delay(endTimeInMillis - elapsed)
-    waitForReadyState()
+    waitForReadyState(isStrict)
   }
-  
+
 }
 
+function isStrictMode(channel: string): boolean {
+  return channel.endsWith("-strict")
+}
+
+function executeCommand(isStrictMode: boolean, isSilent: boolean, command: string) {
+  let sudo = ""
+
+  if (!isStrictMode) {
+    sudo = " sudo "
+  }
+  return sh.exec(sudo + command, { silent: isSilent }).code;
+}
 run();
