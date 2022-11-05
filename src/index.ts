@@ -100,7 +100,7 @@ async function waitTillApiServerIsReady(startTimeInMillis: number, isStrict: boo
 }
 
 function isStrictMode(channel: string): boolean {
-  return channel.endsWith("-strict")
+  return channel.includes("-strict")
 }
 
 function executeCommand(isStrictMode: boolean, isSilent: boolean, command: string) {
