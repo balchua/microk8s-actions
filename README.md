@@ -96,6 +96,16 @@ To use `microk8s` commands for example: `microk8s status`, you should use `sudo`
         sudo microk8s status
 ```
 
+`sg` commands will execute the command using the group specified.  Description taken from [here](https://man7.org/linux/man-pages/man1/sg.1.html#:~:text=The%20sg%20command%20works%20similar,multi%2Dword%20commands%20in%20quotes.)
+
+>  The sg command works similar to newgrp but accepts a command. The
+   command will be executed with the /bin/sh shell. With most shells you
+   may run sg from, you need to enclose multi-word commands in quotes.
+   Another difference between newgrp and sg is that some shells treat
+   newgrp specially, replacing themselves with a new instance of a shell
+   that newgrp creates. This doesn't happen with sg, so upon exit from a
+   sg command you are returned to your previous group ID.
+
 ## Strict confinement
 
 From `v0.3.0` this action now supports Snap strict confinement.
@@ -117,17 +127,9 @@ jobs:
         addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
 ```
 
-`sg` commands will execute the command using the group specified.  Description taken from [here](https://man7.org/linux/man-pages/man1/sg.1.html#:~:text=The%20sg%20command%20works%20similar,multi%2Dword%20commands%20in%20quotes.)
-
->  The sg command works similar to newgrp but accepts a command. The
-   command will be executed with the /bin/sh shell. With most shells you
-   may run sg from, you need to enclose multi-word commands in quotes.
-   Another difference between newgrp and sg is that some shells treat
-   newgrp specially, replacing themselves with a new instance of a shell
-   that newgrp creates. This doesn't happen with sg, so upon exit from a
-   sg command you are returned to your previous group ID.
-
 ## Kubeflow Addon
+
+**Removed from `v0.3.0`, since it is no longer part of MicroK8s addon.**
 
 You can use the `kubeflow` microk8s addon to test your ML.  Due to the size of the VM used by github actions the `KUBEFLOW_BUNDLE` used is `edge`.
 This is the appropriate bundle for low resource machines.
