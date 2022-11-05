@@ -7,6 +7,7 @@ async function run() {
 
   let channel = core.getInput("channel");
   let addons = core.getInput("addons");
+  let devMode = core.getInput("devMode");
   sh.config.fatal = true;
   sh.config.verbose = true
   let isStrict = isStrictMode(channel)
@@ -14,12 +15,16 @@ async function run() {
   try {
     console.log(`'install microk8s [channel: ${channel}] [strict mode: ${isStrict}]'`)
     sh.echo("install microk8s [channel: " + channel + "] [strict mode: " + isStrict + "]")
-    if (isStrict) {
-      executeCommand(false, "sudo snap install microk8s --channel=" + channel)
+    let microK8scommand = "sudo snap install microk8s --channel=" + channel;
+    if (isStrict ) {
+      if (devMode === "true") {
+        microK8scommand = microK8scommand + " --devmode "
+      }
     } else {
-      executeCommand(false, "sudo snap install microk8s --classic --channel=" + channel)
+      microK8scommand = microK8scommand + " --classic "
     }
 
+    executeCommand(false, "sudo snap install microk8s --channel=" + channel)
     let startTimeInMillis = Date.now();
     prepareUserEnv(isStrict);
     waitForReadyState(isStrict);
@@ -107,4 +112,5 @@ function isStrictMode(channel: string): boolean {
 function executeCommand(isSilent: boolean, command: string) {
   return sh.exec(command, { silent: isSilent }).code;
 }
+
 run();
