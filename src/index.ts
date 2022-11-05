@@ -24,7 +24,7 @@ async function run() {
       microK8scommand = microK8scommand + " --classic "
     }
 
-    executeCommand(false, "sudo snap install microk8s --channel=" + channel)
+    executeCommand(false, microK8scommand)
     let startTimeInMillis = Date.now();
     prepareUserEnv(isStrict);
     waitForReadyState(isStrict);
