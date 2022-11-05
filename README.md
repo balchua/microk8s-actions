@@ -18,7 +18,9 @@ This Github Actions enables one to test their applications on multiple Kubernete
 
 ### `channel`
 
-**Required**  This is the MicroK8s channel to choose.  Example: `latest/stable` or `1.18/stable` or `latest/edge/ha-preview`
+**Required**  This is the MicroK8s channel to choose.  Example: `latest/stable` or `1.18/stable` or `latest/edge/ha-preview` 
+
+Strict confinement is also available [see](#strict-confinement)
 
 ### `addons`
 
@@ -28,11 +30,15 @@ New from `v0.2.0`
 
 ### `rbac`
 
+**Removed from `v0.3.0`**
+
 **Deprecated in favor of the new argument `addons`**
 
 **Optional**  Since MicroK8s does not enable `RBAC` by default, user can choose whether they want to enable rbac or not.
 
 ### `dns`
+
+**Removed from `v0.3.0`**
 
 **Deprecated in favor of the new argument `addons`**
 
@@ -40,9 +46,15 @@ New from `v0.2.0`
 
 ### `storage`
 
+**Removed from `v0.3.0`**
+
 **Deprecated in favor of the new argument `addons`**
 
 **Optional** Since MicroK8s does not enable `storage` by default, user can choose whether they want to enable local hostPath storage or not.
+
+### `devMode`
+
+New from `v0.3.0`
 
 
 
@@ -61,8 +73,8 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@v0.2.1
       with:
-        channel: '1.19/stable'
-        addons: '["dns", "rbac", "storage", "registry", "metrics-server"]'
+        channel: '1.25/stable'
+        addons: '["dns", "rbac", "hostpath-storage", "registry", "metrics-server"]'
     - name: Test MicroK8s
       id: myactions
       run: |
@@ -82,6 +94,27 @@ To use `microk8s` commands for example: `microk8s status`, you should use `sudo`
         sg microk8s -c 'microk8s status'
         echo "Executing microk8s status using sudo command."
         sudo microk8s status
+```
+
+## Strict confinement
+
+From `v0.3.0` this action now supports Snap strict confinement.
+
+**Please note that MicroK8s strict confinement is only available from `1.25` as a separate track `1.25-strict`.**
+
+More information [here](https://ubuntu.com/blog/strictly-confined-microk8s)
+
+``` yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: A job to install MicroK8s with strict confinement
+    steps:
+    - uses: balchua/microk8s-actions@feature/strict
+      with:
+        channel: '1.25-strict/stable'
+        devMode: 'true'
+        addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
 ```
 
 `sg` commands will execute the command using the group specified.  Description taken from [here](https://man7.org/linux/man-pages/man1/sg.1.html#:~:text=The%20sg%20command%20works%20similar,multi%2Dword%20commands%20in%20quotes.)
