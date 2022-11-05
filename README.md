@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s with strict confinement
     steps:
-    - uses: balchua/microk8s-actions@feature/strict
+    - uses: balchua/microk8s-actions@v0.3.0
       with:
         channel: '1.25-strict/stable'
         devMode: 'true'
