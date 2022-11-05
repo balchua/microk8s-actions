@@ -15,9 +15,9 @@ async function run() {
     console.log(`'install microk8s [channel: ${channel}] [strict mode: ${isStrict}]'`)
     sh.echo("install microk8s [channel: " + channel + "] [strict mode: " + isStrict + "]")
     if (isStrict) {
-      executeCommand(isStrict, false, "snap install microk8s --channel=" + channel)
+      executeCommand(false, "sudo snap install microk8s --channel=" + channel)
     } else {
-      executeCommand(false, false, "snap install microk8s --classic --channel=" + channel)
+      executeCommand(false, "sudo snap install microk8s --classic --channel=" + channel)
     }
 
     let startTimeInMillis = Date.now();
@@ -40,7 +40,7 @@ async function waitForReadyState(isStrict: boolean) {
   let ready = false;
   while (!ready) {
     await delay(2000);
-    let code = executeCommand(isStrict, true, "microk8s status --wait-ready");
+    let code = executeCommand(true, "sudo microk8s status --wait-ready");
     if (code === 0) {
       ready = true;
       break;
@@ -52,17 +52,17 @@ function prepareUserEnv(isStrict: boolean) {
   // Create microk8s group
   sh.echo("creating microk8s group.");
   if (!isStrict) {
-    executeCommand(false, false, "usermod -a -G microk8s $USER")
+    executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
+  } else {
+    executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
   }
   sh.echo("creating default kubeconfig location.");
-  executeCommand(false, false, "mkdir -p '/home/runner/.kube/'")
+  executeCommand(false, "mkdir -p '/home/runner/.kube/'")
   sh.echo("Generating kubeconfig file to default location.");
-  executeCommand(isStrict, false, "microk8s kubectl config view --raw > $HOME/.kube/config")
+  executeCommand(false, "sudo microk8s kubectl config view --raw > $HOME/.kube/config")
   sh.echo("Change default location ownership.");
-  if (!isStrict) {
-    executeCommand(false, false, "chown -f -R $USER $HOME/.kube/")
-    executeCommand(false, false, "chmod go-rx $HOME/.kube/config")
-  }
+  executeCommand(false, "sudo chown -f -R $USER $HOME/.kube/")
+  executeCommand(false, "sudo chmod go-rx $HOME/.kube/config")
 
 }
 
@@ -73,7 +73,7 @@ function enableAddon(addon: string, isStrict: boolean) {
     if (addon === "kubeflow") {
       sh.echo('kubeflow is no longer supported as a addon');
     } else {
-      executeCommand(isStrict, false, 'sudo microk8s enable ' + addon)
+      executeCommand(false, 'sudo microk8s enable ' + addon)
     }
     waitForReadyState(isStrict)
   }
@@ -105,12 +105,7 @@ function isStrictMode(channel: string): boolean {
   return channel.includes("-strict")
 }
 
-function executeCommand(isStrictMode: boolean, isSilent: boolean, command: string) {
-  let sudo = ""
-
-  if (!isStrictMode) {
-    sudo = " sudo "
-  }
-  return sh.exec(sudo + command, { silent: isSilent }).code;
+function executeCommand(isSilent: boolean, command: string) {
+  return sh.exec(command, { silent: isSilent }).code;
 }
 run();
