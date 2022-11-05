@@ -16,7 +16,11 @@ async function run() {
 
   try {
     sh.echo("install microk8s..")
-    executeCommand(isStrict, false, "snap install microk8s --classic --channel=" + channel)
+    if (isStrict) {
+      executeCommand(isStrict, false, "snap install microk8s --channel=" + channel)
+    } else {
+      executeCommand(false, false, "snap install microk8s --classic --channel=" + channel)
+    }
 
     let startTimeInMillis = Date.now();
 
