@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s with strict confinement
     steps:
-    - uses: balchua/microk8s-actions@master
+    - uses: balchua/microk8s-actions@feature/strict
       with:
         channel: '1.25-strict/stable'
         addons: '["rbac", "dns", "storage", "registry", "metrics-server"]'
