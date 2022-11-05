@@ -15,7 +15,7 @@ async function run() {
   let isStrict = isStrictMode(channel)
 
   try {
-    sh.echo("install microk8s..")
+    sh.echo("install microk8s [channel: " + channel + "] [strict mode: " +isStrict + "]")
     if (isStrict) {
       executeCommand(isStrict, false, "snap install microk8s --channel=" + channel)
     } else {
