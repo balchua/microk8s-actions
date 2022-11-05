@@ -1,124 +1,116 @@
 import * as core from '@actions/core';
+import { exec } from '@actions/exec';
 import * as sh from 'shelljs';
 
 
 async function run() {
 
   let channel = core.getInput("channel");
-  let rbac = core.getInput("rbac");
-  let dns = core.getInput("dns");
-  let storage = core.getInput("storage");
   let addons = core.getInput("addons");
+  let devMode = core.getInput("devMode");
   sh.config.fatal = true;
   sh.config.verbose = true
+  let isStrict = isStrictMode(channel)
 
   try {
-    sh.echo("install microk8s..")
-    sh.exec("sudo snap install microk8s --classic --channel=" + channel );
-  
-    let startTimeInMillis=Date.now();
-    
-    waitForReadyState();
-    prepareUserEnv();
-    enableOrDisableRbac(rbac);
-    enableOrDisableDns(dns);
-    enableOrDisableStorage(storage);
-  
-    if (addons) {
-      enableAddons(JSON.parse(addons));
+    console.log(`'install microk8s [channel: ${channel}] [strict mode: ${isStrict}]'`)
+    sh.echo("install microk8s [channel: " + channel + "] [strict mode: " + isStrict + "]")
+    let microK8scommand = "sudo snap install microk8s --channel=" + channel;
+    if (isStrict ) {
+      if (devMode === "true") {
+        microK8scommand = microK8scommand + " --devmode "
+      }
+    } else {
+      microK8scommand = microK8scommand + " --classic "
     }
-  
-    waitTillApiServerIsReady(startTimeInMillis)
+
+    executeCommand(false, microK8scommand)
+    let startTimeInMillis = Date.now();
+    prepareUserEnv(isStrict);
+    waitForReadyState(isStrict);
+
+    if (addons) {
+      enableAddons(JSON.parse(addons), isStrict);
+    }
+
+    waitTillApiServerIsReady(startTimeInMillis, isStrict)
   } catch (error) {
     core.setFailed(error.message);
   }
 
 }
 
-async function waitForReadyState() {
+async function waitForReadyState(isStrict: boolean) {
   let ready = false;
   while (!ready) {
     await delay(2000);
-    let code = sh.exec("sudo microk8s status --wait-ready", { silent: true }).code;
+    let code = executeCommand(true, "sudo microk8s status --wait-ready");
     if (code === 0) {
       ready = true;
       break;
     }
-  }  
+  }
 }
-  
-function prepareUserEnv() {
+
+function prepareUserEnv(isStrict: boolean) {
   // Create microk8s group
   sh.echo("creating microk8s group.");
-  sh.exec("sudo usermod -a -G microk8s $USER");
+  if (!isStrict) {
+    executeCommand(false, "sudo usermod -a -G microk8s $USER")
+  } else {
+    executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
+  }
   sh.echo("creating default kubeconfig location.");
-  sh.exec("mkdir -p '/home/runner/.kube/'")
+  executeCommand(false, "mkdir -p '/home/runner/.kube/'")
   sh.echo("Generating kubeconfig file to default location.");
-  sh.exec("sudo microk8s kubectl config view --raw > $HOME/.kube/config")
+  executeCommand(false, "sudo microk8s kubectl config view --raw > $HOME/.kube/config")
   sh.echo("Change default location ownership.");
-  sh.exec("sudo chown -f -R $USER $HOME/.kube/");
-  sh.exec("chmod go-rx $HOME/.kube/config")
-}
-
-function enableOrDisableRbac(rbac: string) {
-  // Enabling RBAC
-  if (rbac.toLowerCase() === "true") {
-    enableAddon('rbac');
-  }
+  executeCommand(false, "sudo chown -f -R $USER $HOME/.kube/")
+  executeCommand(false, "sudo chmod go-rx $HOME/.kube/config")
 
 }
 
-function enableOrDisableDns(dns: string) {
-  if (dns.toLowerCase() === "true") {
-    enableAddon('dns');
-  }
-}
-
-function enableOrDisableStorage(storage: string) {
-  if (storage.toLowerCase() === "true") {
-    enableAddon('storage');
-  }
-}
-
-function enableAddon(addon: string) {
+function enableAddon(addon: string, isStrict: boolean) {
   if (addon) {
     sh.echo('Start enabling ' + addon);
-    waitForReadyState()
+    waitForReadyState(isStrict)
     if (addon === "kubeflow") {
-      sh.exec("sg microk8s -c 'KUBEFLOW_IGNORE_MIN_MEM=true KUBEFLOW_BUNDLE=edge microk8s enable kubeflow'")
+      sh.echo('kubeflow is no longer supported as a addon');
     } else {
-      sh.exec('sudo microk8s enable ' + addon);
+      executeCommand(false, 'sudo microk8s enable ' + addon)
     }
-    waitForReadyState()
+    waitForReadyState(isStrict)
   }
 }
 
-function enableKubeflow(addon: string) {
-
-}
-
-function delay(ms: number)
-{
+function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function enableAddons(addons: string[]){
-  
-  addons.forEach( (addon) => {
-      enableAddon(addon);
+function enableAddons(addons: string[], isStrict: boolean) {
+  addons.forEach((addon) => {
+    enableAddon(addon, isStrict);
   });
-    
+
 }
 
-async function waitTillApiServerIsReady(startTimeInMillis: number) {
+async function waitTillApiServerIsReady(startTimeInMillis: number, isStrict: boolean) {
   let endTimeInMillis = startTimeInMillis + 80000;
-  let elapsed=Date.now();
-  
-  if (endTimeInMillis > elapsed){
+  let elapsed = Date.now();
+
+  if (endTimeInMillis > elapsed) {
     await delay(endTimeInMillis - elapsed)
-    waitForReadyState()
+    waitForReadyState(isStrict)
   }
-  
+
+}
+
+function isStrictMode(channel: string): boolean {
+  return channel.includes("-strict")
+}
+
+function executeCommand(isSilent: boolean, command: string) {
+  return sh.exec(command, { silent: isSilent }).code;
 }
 
 run();

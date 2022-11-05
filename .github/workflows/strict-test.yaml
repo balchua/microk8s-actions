@@ -1,0 +1,19 @@
+name: Strict confinement test Microk8s
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: A job to install MicroK8s with strict confinement
+    steps:
+    - uses: balchua/microk8s-actions@feature/strict
+      with:
+        channel: '1.25-strict/stable'
+        devMode: 'true'
+        addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
+    - name: Test MicroK8s commands
+      id: microk8s-commands
+      run: |
+        set -ex
+        sudo microk8s status        
+        sudo microk8s kubectl get pods -A
