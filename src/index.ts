@@ -6,16 +6,13 @@ import * as sh from 'shelljs';
 async function run() {
 
   let channel = core.getInput("channel");
-  let rbac = core.getInput("rbac");
-  let dns = core.getInput("dns");
-  let storage = core.getInput("storage");
   let addons = core.getInput("addons");
   sh.config.fatal = true;
   sh.config.verbose = true
   let isStrict = isStrictMode(channel)
 
   try {
-    sh.echo("install microk8s [channel: " + channel + "] [strict mode: " +isStrict + "]")
+    sh.echo("install microk8s [channel: " + channel + "] [strict mode: " + isStrict + "]")
     if (isStrict) {
       executeCommand(isStrict, false, "snap install microk8s --channel=" + channel)
     } else {
@@ -65,7 +62,7 @@ function prepareUserEnv(isStrict: boolean) {
     executeCommand(false, false, "chown -f -R $USER $HOME/.kube/")
     executeCommand(false, false, "chmod go-rx $HOME/.kube/config")
   }
-  
+
 }
 
 function enableAddon(addon: string, isStrict: boolean) {
