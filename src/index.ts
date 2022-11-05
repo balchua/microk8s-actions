@@ -21,9 +21,8 @@ async function run() {
     }
 
     let startTimeInMillis = Date.now();
-
-    waitForReadyState(isStrict);
     prepareUserEnv(isStrict);
+    waitForReadyState(isStrict);
 
     if (addons) {
       enableAddons(JSON.parse(addons), isStrict);
@@ -52,7 +51,7 @@ function prepareUserEnv(isStrict: boolean) {
   // Create microk8s group
   sh.echo("creating microk8s group.");
   if (!isStrict) {
-    executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
+    executeCommand(false, "sudo usermod -a -G microk8s $USER")
   } else {
     executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
   }
