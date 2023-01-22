@@ -13,8 +13,7 @@ async function run() {
   let isStrict = isStrictMode(channel)
 
   try {
-    executeCommand(false, 'sudo groupadd --non-unique --gid "$(getent group adm | cut -f3 -d:)" microk8s')
-    executeCommand(false, 'sudo groupadd --non-unique --gid "$(getent group adm | cut -f3 -d:)" snap_microk8s')
+
     console.log(`'install microk8s [channel: ${channel}] [strict mode: ${isStrict}]'`)
     sh.echo("install microk8s [channel: " + channel + "] [strict mode: " + isStrict + "]")
     let microK8scommand = "sudo snap install microk8s --channel=" + channel;
@@ -58,8 +57,10 @@ function prepareUserEnv(isStrict: boolean) {
   // Create microk8s group
   sh.echo("creating microk8s group.");
   if (!isStrict) {
+    executeCommand(false, 'sudo groupadd --non-unique --gid "$(getent group adm | cut -f3 -d:)" microk8s')
     executeCommand(false, "sudo usermod -a -G microk8s $USER")
   } else {
+    executeCommand(false, 'sudo groupadd --non-unique --gid "$(getent group adm | cut -f3 -d:)" snap_microk8s')
     executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
   }
   sh.echo("creating default kubeconfig location.");
