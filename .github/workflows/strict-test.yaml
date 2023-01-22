@@ -8,12 +8,12 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@fix/group_add
       with:
-        channel: '1.25-strict/stable'
+        channel: '1.26-strict/stable'
         devMode: 'true'
         addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
     - name: Test MicroK8s commands
       id: microk8s-commands
       run: |
         set -ex
-        microk8s status        
+        sg microk8s -c 'microk8s status'
         microk8s kubectl get pods -A

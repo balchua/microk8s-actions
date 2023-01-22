@@ -56,9 +56,8 @@ async function waitForReadyState(isStrict: boolean) {
 function prepareUserGroup(isStrict: boolean) {
   // Create microk8s group
   sh.echo("creating microk8s group.");
-  executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" microk8s")
-  executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" snap_microk8s")
   if (!isStrict) {
+    executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" microk8s")
     executeCommand(false, "sudo usermod -a -G microk8s $USER")
   } else {
     executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
