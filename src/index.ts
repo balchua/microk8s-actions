@@ -63,7 +63,6 @@ function prepareUserGroup(isStrict: boolean) {
   } else {
     executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
   }
-  executeCommand(false, "exec bash")
 }
 
 

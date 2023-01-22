@@ -12,6 +12,7 @@ jobs:
         addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
 
     - name: Check User
+      id: checkUser
       run: |
         id
         microk8s status
