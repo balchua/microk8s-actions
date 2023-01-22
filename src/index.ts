@@ -13,7 +13,10 @@ async function run() {
   let isStrict = isStrictMode(channel)
 
   try {
-
+    sh.echo("creating microk8s group.");
+    executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" microk8s")
+    executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" snap_microk8s")
+    
     console.log(`'install microk8s [channel: ${channel}] [strict mode: ${isStrict}]'`)
     sh.echo("install microk8s [channel: " + channel + "] [strict mode: " + isStrict + "]")
     let microK8scommand = "sudo snap install microk8s --channel=" + channel;
