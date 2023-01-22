@@ -60,6 +60,8 @@ function prepareUserGroup(isStrict: boolean) {
     executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" microk8s")
     executeCommand(false, "sudo usermod -a -G microk8s $USER")
   } else {
+    executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" microk8s")
+    executeCommand(false, "sudo useradd -g --gid \"$(getent group adm | cut -f3 -d:)\" snap_microk8s")
     executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
   }
 }
