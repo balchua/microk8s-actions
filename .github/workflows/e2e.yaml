@@ -14,7 +14,7 @@ jobs:
     - name: Check User
       run: |
         id
-        sg microk8s -c 'microk8s status'
+        microk8s status
         
     - name: Test MicroK8s
       id: microk8s
@@ -35,6 +35,8 @@ jobs:
       id: microk8s-commands
       run: |
         set -ex
+        echo "Executing microk8s status ."
+        microk8s status
         echo "Executing microk8s status using sg command."
         sg microk8s -c 'microk8s status'
         echo "Executing microk8s status using sudo command."
