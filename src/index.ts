@@ -36,7 +36,13 @@ async function run() {
 
     waitTillApiServerIsReady(startTimeInMillis, isStrict)
   } catch (error) {
-    core.setFailed(error.message);
+    
+    if (error instanceof Error) {
+      core.setFailed(error.message);
+    } else {
+      core.setFailed(`Action failed with error ${error}`);
+    }
+    
   }
 
 }
@@ -59,11 +65,13 @@ function prepareUserGroup(isStrict: boolean) {
   if (!isStrict) {
     executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" microk8s")
     executeCommand(false, "sudo usermod -a -G microk8s $USER")
-  } else {
+  } 
+  /*else {
     executeCommand(false, "sudo groupadd --non-unique --gid \"$(getent group adm | cut -f3 -d:)\" snap_microk8s")
-    executeCommand(false, "sudo useradd --gid \"$(getent group adm | cut -f3 -d:)\" snap_microk8s")
-    executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
+    //executeCommand(false, "sudo useradd --gid \"$(getent group adm | cut -f3 -d:)\" snap_microk8s")
+    executeCommand(false, "sudo usermod -a --gid \"$(getent group adm | cut -f3 -d:)\" $USER")
   }
+  */
 }
 
 
