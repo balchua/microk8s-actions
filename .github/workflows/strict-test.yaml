@@ -15,5 +15,5 @@ jobs:
       id: microk8s-commands
       run: |
         set -ex
-        sg snap_microk8s -c 'microk8s status'
+        sudo microk8s status
         microk8s kubectl get pods -A
