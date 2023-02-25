@@ -78,6 +78,7 @@ function enableAddon(addon: string, isStrict: boolean) {
       sh.echo('kubeflow is no longer supported as a addon');
     } else {
       executeCommand(false, 'sudo microk8s enable ' + addon)
+      waitForStorageToBeReady(isStrict, addon)
     }
     waitForReadyState(isStrict)
   }
