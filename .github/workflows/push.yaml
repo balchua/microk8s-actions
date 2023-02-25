@@ -43,7 +43,8 @@ jobs:
       run: |
         docker pull balchu/bopbag:1.0.1
         REGISTRY_IP=`kubectl -n container-registry get svc/registry -o jsonpath='{.spec.clusterIP}'`
+        echo $REGISTRY_IP
         docker tag balchu/bopbag:1.0.1 $REGISTRY_IP:5000/balchu/bopbag:1.0.1
-
+        docker push $REGISTRY_IP:5000/balchu/bopbag:1.0.1
         curl http://$REGISTRY_IP:5000/v2/_catalog
         
