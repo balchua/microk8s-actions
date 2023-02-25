@@ -20,7 +20,7 @@ jobs:
         docker pull busybox:latest
         REGISTRY_IP=`kubectl -n container-registry get svc/registry -o jsonpath='{.spec.clusterIP}'`
         echo $REGISTRY_IP
-        docker tag busybox:latest localhost:32000/my-repo/busybox:latest
+        docker tag busybox:latest localhost:32000/my-repo/busybox:0.0.1
         docker push localhost:32000/my-repo/busybox:latest
         curl http://localhost:32000/v2/_catalog
         
