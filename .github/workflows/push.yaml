@@ -14,13 +14,27 @@ jobs:
       run: |
         id
         sg microk8s -c 'microk8s status'
+    - name: Wait for hostpath to be ready
+      id: microk8s
+      run: |
+        set -ex
+        kubectl get no
+        kubectl get pods -A -o wide
+        sleep 60 # Give it sometime before we start checking for pod readiness.
+        # wait for storage pod to be ready
+        kubectl -n kube-system wait --for=condition=ready pod -l k8s-app=hostpath-provisioner --timeout=60s
+        storage_ready=$?
 
+        if [ $storage_ready -ne 0 ]; then
+          echo "Error storage not ready."
+          exit $storage_ready
+        fi
     - name: Docker pull and push to local "registry"
       run: |
-        docker pull busybox:latest
+        docker pull busybox:1
         REGISTRY_IP=`kubectl -n container-registry get svc/registry -o jsonpath='{.spec.clusterIP}'`
         echo $REGISTRY_IP
-        docker tag busybox:latest localhost:32000/my-repo/busybox:0.0.1
-        docker push localhost:32000/my-repo/busybox:0.0.1
+        docker tag busybox:1 localhost:32000/my-repo/busybox:1
+        docker push localhost:32000/my-repo/busybox:1
         curl http://localhost:32000/v2/_catalog
         
