@@ -113,4 +113,12 @@ function executeCommand(isSilent: boolean, command: string) {
   return sh.exec(command, { silent: isSilent }).code;
 }
 
+function waitForStorageToBeReady(isSilent: boolean, addon: string) {
+  if (addon === "hostpath-storage") {
+    sh.echo('Waiting for hostpath-storage to be ready ');
+    executeCommand(isSilent, "sudo microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system --timeout=90s")
+  }
+  
+}
+
 run();
