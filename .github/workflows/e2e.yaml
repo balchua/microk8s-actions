@@ -9,7 +9,7 @@ jobs:
     - uses: balchua/microk8s-actions@fix/push-local-registry
       with:
         channel: '1.25/stable'
-        addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
+        addons: '["rbac", "dns", "hostpath-storage", "registry"]'
 
     - name: Check User
       run: |
