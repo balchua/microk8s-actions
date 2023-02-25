@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-    - uses: balchua/microk8s-actions@fix/push-local-registry
+    - uses: balchua/microk8s-actions@master
       with:
-        channel: '1.25/stable'
+        channel: '1.26/stable'
         addons: '["rbac", "dns", "hostpath-storage", "registry"]'
 
     - name: Check User
@@ -16,7 +16,7 @@ jobs:
         id
         sg microk8s -c 'microk8s status'
 
-    - name: Docker pull and push to local "registry"
+    - name: Check push to local registry
       run: |
         docker pull busybox:1
         echo $REGISTRY_IP
