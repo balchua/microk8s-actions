@@ -17,7 +17,7 @@ jobs:
 
     - name: Docker pull and push to local "registry"
       run: |
-        docker pull balchu/bopbag:1.0.1
+        docker pull busybox:latest
         REGISTRY_IP=`kubectl -n container-registry get svc/registry -o jsonpath='{.spec.clusterIP}'`
         echo $REGISTRY_IP
         docker tag busybox:latest localhost:32000/my-repo/busybox:latest
