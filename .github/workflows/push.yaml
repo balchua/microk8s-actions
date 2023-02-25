@@ -1,4 +1,4 @@
-name: Test Microk8s
+name: Test push image to local registry
 on: [push]
 
 jobs:
@@ -14,8 +14,6 @@ jobs:
       run: |
         id
         sg microk8s -c 'microk8s status'
-    - uses: docker/setup-qemu-action@v2 
-      name: Set up docker
     - name: Test MicroK8s
       id: microk8s
       run: |
@@ -44,7 +42,7 @@ jobs:
         docker pull balchu/bopbag:1.0.1
         REGISTRY_IP=`kubectl -n container-registry get svc/registry -o jsonpath='{.spec.clusterIP}'`
         echo $REGISTRY_IP
-        docker tag balchu/bopbag:1.0.1 $REGISTRY_IP:5000/balchu/bopbag:1.0.1
-        docker push $REGISTRY_IP:5000/balchu/bopbag:1.0.1
-        curl http://$REGISTRY_IP:5000/v2/_catalog
+        docker tag balchu/bopbag:1.0.1 localhost:32000/balchu/bopbag:1.0.1
+        docker push localhost:32000/balchu/bopbag:1.0.1
+        curl http://localhost:32000/v2/_catalog
         
