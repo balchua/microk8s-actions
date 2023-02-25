@@ -8,14 +8,22 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@master
       with:
-        channel: '1.25/stable'
-        addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
+        channel: '1.26/stable'
+        addons: '["rbac", "dns", "hostpath-storage", "registry"]'
 
     - name: Check User
       run: |
         id
         sg microk8s -c 'microk8s status'
-        
+
+    - name: Check push to local registry
+      run: |
+        docker pull busybox:1
+        echo $REGISTRY_IP
+        docker tag busybox:1 localhost:32000/my-repo/busybox:1
+        docker push localhost:32000/my-repo/busybox:1
+        curl http://localhost:32000/v2/_catalog
+                
     - name: Test MicroK8s
       id: microk8s
       run: |

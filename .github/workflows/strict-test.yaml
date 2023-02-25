@@ -8,9 +8,9 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@master
       with:
-        channel: '1.25-strict/stable'
+        channel: '1.26-strict/stable'
         devMode: 'true'
-        addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
+        addons: '["rbac", "dns", "metrics-server", "hostpath-storage", "registry"]'
     - name: Test MicroK8s commands
       id: microk8s-commands
       run: |

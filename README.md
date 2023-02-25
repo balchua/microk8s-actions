@@ -73,7 +73,7 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@v0.3.0
       with:
-        channel: '1.25/stable'
+        channel: '1.26/stable'
         addons: '["dns", "rbac", "hostpath-storage", "registry", "metrics-server"]'
     - name: Test MicroK8s
       id: myactions
@@ -122,7 +122,7 @@ jobs:
     steps:
     - uses: balchua/microk8s-actions@v0.3.0
       with:
-        channel: '1.25-strict/stable'
+        channel: '1.26-strict/stable'
         devMode: 'true'
         addons: '["rbac", "dns", "hostpath-storage", "registry", "metrics-server"]'
 ```

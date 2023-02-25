@@ -78,6 +78,8 @@ function enableAddon(addon: string, isStrict: boolean) {
       sh.echo('kubeflow is no longer supported as a addon');
     } else {
       executeCommand(false, 'sudo microk8s enable ' + addon)
+      waitForStorageToBeReady(isStrict, addon)
+      waitForRegistryPvClaim(isStrict, addon)
     }
     waitForReadyState(isStrict)
   }
@@ -111,6 +113,20 @@ function isStrictMode(channel: string): boolean {
 
 function executeCommand(isSilent: boolean, command: string) {
   return sh.exec(command, { silent: isSilent }).code;
+}
+
+function waitForStorageToBeReady(isSilent: boolean, addon: string) {
+  if (addon === "hostpath-storage") {
+    sh.echo('Waiting for hostpath-storage to be ready ');
+    executeCommand(isSilent, "sudo microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system --timeout=90s")
+  }
+}
+
+function waitForRegistryPvClaim(isSilent: boolean, addon: string) {
+  if (addon === "registry") {
+    sh.echo('Waiting for registry volume to be bound');
+    executeCommand(isSilent, "sudo microk8s  kubectl wait --for=jsonpath='{.status.phase}'=Bound pvc/registry-claim -n container-registry --timeout=90s")
+  }
 }
 
 run();
