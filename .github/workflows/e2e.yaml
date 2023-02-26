@@ -16,14 +16,19 @@ jobs:
         id
         sg microk8s -c 'microk8s status'
 
-    - name: Check push to local registry
-      run: |
-        docker pull busybox:1
-        echo $REGISTRY_IP
-        docker tag busybox:1 localhost:32000/my-repo/busybox:1
-        docker push localhost:32000/my-repo/busybox:1
-        curl http://localhost:32000/v2/_catalog
-                
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        driver-opts: |
+          network=host
+
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: test-docker-build/
+        push: true
+        tags: localhost:32000/myrepo/app:latest                
+
     - name: Test MicroK8s
       id: microk8s
       run: |
