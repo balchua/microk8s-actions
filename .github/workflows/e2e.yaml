@@ -25,7 +25,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
-        context: test-docker-build/
+        context: ./test-docker-build/
         push: true
         tags: localhost:32000/myrepo/app:latest                
 
