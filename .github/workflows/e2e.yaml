@@ -6,6 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
+    - uses: actions/checkout@v3
+    
     - uses: balchua/microk8s-actions@master
       with:
         channel: '1.26/stable'
