@@ -18,7 +18,7 @@ This Github Actions enables one to test their applications on multiple Kubernete
 
 ### `channel`
 
-**Required**  This is the MicroK8s channel to choose.  Example: `latest/stable` or `1.18/stable` or `latest/edge/ha-preview` 
+**Required**  This is the MicroK8s channel to choose.  Example: `latest/stable` or `1.26/stable` 
 
 Strict confinement is also available [see](#strict-confinement)
 
@@ -71,10 +71,10 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-    - uses: balchua/microk8s-actions@v0.3.0
+    - uses: balchua/microk8s-actions@v0.3.2
       with:
         channel: '1.26/stable'
-        addons: '["dns", "rbac", "hostpath-storage", "registry", "metrics-server"]'
+        addons: '["dns", "rbac", "hostpath-storage", "registry"]'
     - name: Test MicroK8s
       id: myactions
       run: |
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s with strict confinement
     steps:
-    - uses: balchua/microk8s-actions@v0.3.0
+    - uses: balchua/microk8s-actions@v0.3.2
       with:
         channel: '1.26-strict/stable'
         devMode: 'true'
@@ -144,3 +144,6 @@ The main program is a Typescript, located in [src/index.ts](src/index.ts).  Befo
 $ npm run build
 ```
 
+## Troubleshooting
+
+See [Troubleshooting guide](troubleshooting.md)
