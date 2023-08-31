@@ -61,7 +61,7 @@ function prepareUserEnv(isStrict: boolean) {
     executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
   }
   sh.echo("creating default kubeconfig location.");
-  executeCommand(false, "mkdir -p '/home/runner/.kube/'")
+  executeCommand(false, "mkdir -p $HOME/.kube")
   sh.echo("Generating kubeconfig file to default location.");
   executeCommand(false, "sudo microk8s kubectl config view --raw > $HOME/.kube/config")
   sh.echo("Change default location ownership.");
