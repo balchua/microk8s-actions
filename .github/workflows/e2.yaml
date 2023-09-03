@@ -4,31 +4,12 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-
     name: A job to install MicroK8s
     steps:
-      - uses: actions/checkout@v3
+      - uses: balchua/microk8s-actions@master
         with:
-          sparse-checkout: |
-            microk8s-config.yaml
-          sparse-checkout-cone-mode: false
-
-      - name: build-image-and-create-microk8s-config
-        run: |
-          mkdir -p $HOME/sideload
-          docker pull alpine:edge
-          docker save alpine:edge > $HOME/sideload/alpine-edge.tar
-
-      - uses: balchua/microk8s-actions@feat/launch_config
-        with:
-          channel: "1.28/stable"
-          launch-configuration: "$GITHUB_WORKSPACE/microk8s-config.yaml"
-          sideload-images-path: "$HOME/sideload/"
-
-      - name: Check Side loaded images
-        run: |
-          sudo microk8s ctr images ls | grep alpine:edge
-          sudo microk8s status --wait-ready
+          channel: "1.26/stable"
+          addons: '["rbac", "dns", "hostpath-storage", "registry"]'
 
       - name: Check User
         run: |
