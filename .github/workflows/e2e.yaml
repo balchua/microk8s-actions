@@ -6,11 +6,20 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-      - name: build-image
+      - name: build-image-and-create-microk8s-config
         run: |
           mkdir -p $HOME/sideload
           docker pull alpine:edge
           docker save alpine:edge > $HOME/sideload/alpine-edge.tar
+          cat > microk8s-config.yaml << EOF
+          version: 0.1.0
+          addons:
+            - name: dns
+            - name: rbac
+            - name: ingress
+            - name: hostpath-storage
+            - name: registry
+          EOF
 
       - uses: balchua/microk8s-actions@feat/launch_config
         with:
