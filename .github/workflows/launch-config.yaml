@@ -31,6 +31,8 @@ jobs:
 
       - name: Check enabled addons
         run: |
+          sudo microk8s kubectl wait pods --for=jsonpath='{.status.phase}'=Running -l name=nginx-ingress-microk8s -n ingress --timeout=90s
+          sudo microk8s status --wait-ready
           sudo microk8s status --addon dns --wait-ready | grep enabled
           sudo microk8s status --addon ingress --wait-ready | grep enabled
           sudo microk8s status --addon rbac --wait-ready | grep enabled
