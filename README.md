@@ -56,7 +56,40 @@ New from `v0.2.0`
 
 New from `v0.3.0`
 
+### `launch-configuration`
 
+New from `v0.4.0`
+
+**Optional** A launch configuration is a YAML configuration file that can be applied to a MicroK8s node typically during installation.  Example: `/home/runner/microk8s-config.yaml`
+
+Once you have defined your `launch-configuration`, there is no need to add the addons one by one in the config.
+
+Example:
+
+``` yaml
+- uses: balchua/microk8s-actions@feat/launch_config
+  with:
+    channel: "1.28/stable"
+    launch-configuration: "$GITHUB_WORKSPACE/microk8s-config.yaml"
+    sideload-images-path: "$HOME/sideload/"
+```
+
+**This is only available from MicroK8s `v1.27`**
+
+### `sideload-images-path`
+
+New from `v0.4.0`
+
+**Optional** 
+
+Side load images automatically loads image tarballs to MicroK8s Containerd.  
+You can use this to automatically load your images into MicroK8s, without using a registry .  
+
+Example: `/home/runner/sideload/`
+
+Please note that this is applicable during MicroK8s installation.
+
+**This is only available from MicroK8s `v1.27`**
 
 ## Example Usage:
 
@@ -138,7 +171,9 @@ For more information regarding kubeflow addon check this [link](https://microk8s
 
 ## Building
 
-The main program is a Typescript, located in [src/index.ts](src/index.ts).  Before pushing the code to Github, you should compile the source to ES6.
+The main program is a Typescript, located in [src](src/).  
+
+Before pushing the code to Github, you should compile the source to ES6.
 
 ```shell
 $ npm run build

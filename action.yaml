@@ -1,20 +1,27 @@
-name: 'MicroK8s Action'
-description: 'Run a MicroK8s Kubernetes cluster in your GitHub Action'
+name: "MicroK8s Action"
+description: "Run a MicroK8s Kubernetes cluster in your GitHub Action"
 author: "balchua"
 inputs:
-  channel:  # MicroK8s channel
-    description: 'The MicroK8s Channel to use.  More information here https://microk8s.io/docs/setting-snap-channel'
+  channel: # MicroK8s channel
+    description: "The MicroK8s Channel to use.  More information here https://microk8s.io/docs/setting-snap-channel"
     required: true
-    default: 'latest/stable'
+    default: "latest/stable"
   devMode:
     description: "Enable devmode, this is only applicable to strict confinement"
     required: false
     default: "false"
   addons:
-    description: "A JSON array of addons to enable"    
+    description: "A JSON array of addons to enable"
     required: false
     default: "[]"
-
+  launch-configuration:
+    description: "Fully qualified path where the custom MicroK8s launch configuration is located"
+    required: false
+    default: ""
+  sideload-images-path:
+    description: "Fully qualified path where the container image tarballs is located"
+    required: false
+    default: ""
 runs:
-  using: 'node16'
-  main: 'lib/index.js'
+  using: "node16"
+  main: "lib/index.js"

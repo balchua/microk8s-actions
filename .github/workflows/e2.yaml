@@ -1,0 +1,49 @@
+name: Test Microk8s
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: A job to install MicroK8s
+    steps:
+      - uses: balchua/microk8s-actions@master
+        with:
+          channel: "1.26/stable"
+          addons: '["rbac", "dns", "hostpath-storage", "registry"]'
+
+      - name: Check User
+        run: |
+          id
+          sg microk8s -c 'microk8s status'
+
+      - name: Check push to local registry
+        run: |
+          docker pull busybox:1
+          echo $REGISTRY_IP
+          docker tag busybox:1 localhost:32000/my-repo/busybox:1
+          docker push localhost:32000/my-repo/busybox:1
+          curl http://localhost:32000/v2/_catalog
+
+      - name: Test MicroK8s
+        id: microk8s
+        run: |
+          set -ex
+          kubectl get no
+          kubectl get pods -A -o wide
+          sleep 120 # Give it sometime before we start checking for pod readiness.
+          # wait for storage pod to be ready
+          kubectl -n kube-system wait --for=condition=ready pod -l k8s-app=hostpath-provisioner --timeout=60s
+          storage_ready=$?
+
+          if [ $storage_ready -ne 0 ]; then
+            echo "Error storage not ready."
+            exit $storage_ready
+          fi
+      - name: Test MicroK8s commands
+        id: microk8s-commands
+        run: |
+          set -ex
+          echo "Executing microk8s status using sg command."
+          sg microk8s -c 'microk8s status'
+          echo "Executing microk8s status using sudo command."
+          sudo microk8s status
