@@ -1,132 +1,42 @@
 import * as core from '@actions/core';
-import { exec } from '@actions/exec';
+//import { exec } from '@actions/exec';
 import * as sh from 'shelljs';
+import * as util from './util';
+import * as status from './status';
+import * as mk8s from './microk8s';
 
 
 async function run() {
 
-  let channel = core.getInput("channel");
-  let addons = core.getInput("addons");
+  let addonConfig = core.getInput("addons");
   let devMode = core.getInput("devMode");
+  let channel = core.getInput("channel");
+  let launchConfigPath = core.getInput("launch-configuration");
+  let sideloadImagePath = core.getInput("sideload-images-path");
   sh.config.fatal = true;
   sh.config.verbose = true
-  let isStrict = isStrictMode(channel)
+
 
   try {
-    console.log(`'install microk8s [channel: ${channel}] [strict mode: ${isStrict}]'`)
-    sh.echo("install microk8s [channel: " + channel + "] [strict mode: " + isStrict + "]")
-    let microK8scommand = "sudo snap install microk8s --channel=" + channel;
-    if (isStrict ) {
-      if (devMode === "true") {
-        microK8scommand = microK8scommand + " --devmode "
-      }
-    } else {
-      microK8scommand = microK8scommand + " --classic "
-    }
+    let addons = JSON.parse(addonConfig);
+    let microk8s = new mk8s.MicroK8s(channel,
+      addons,
+      devMode,
+      launchConfigPath,
+      sideloadImagePath);
 
-    executeCommand(false, microK8scommand)
-    let startTimeInMillis = Date.now();
-    prepareUserEnv(isStrict);
-    waitForReadyState(isStrict);
+    microk8s.install();
+    microk8s.enableAddons();
 
-    if (addons) {
-      enableAddons(JSON.parse(addons), isStrict);
-    }
-
-    waitTillApiServerIsReady(startTimeInMillis, isStrict)
   } catch (error) {
-    core.setFailed(error.message);
-  }
-
-}
-
-async function waitForReadyState(isStrict: boolean) {
-  let ready = false;
-  while (!ready) {
-    await delay(2000);
-    let code = executeCommand(true, "sudo microk8s status --wait-ready");
-    if (code === 0) {
-      ready = true;
-      break;
-    }
-  }
-}
-
-function prepareUserEnv(isStrict: boolean) {
-  // Create microk8s group
-  sh.echo("creating microk8s group.");
-  if (!isStrict) {
-    executeCommand(false, "sudo usermod -a -G microk8s $USER")
-  } else {
-    executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
-  }
-  sh.echo("creating default kubeconfig location.");
-  executeCommand(false, "mkdir -p '/home/runner/.kube/'")
-  sh.echo("Generating kubeconfig file to default location.");
-  executeCommand(false, "sudo microk8s kubectl config view --raw > $HOME/.kube/config")
-  sh.echo("Change default location ownership.");
-  executeCommand(false, "sudo chown -f -R $USER $HOME/.kube/")
-  executeCommand(false, "sudo chmod go-rx $HOME/.kube/config")
-
-}
-
-function enableAddon(addon: string, isStrict: boolean) {
-  if (addon) {
-    sh.echo('Start enabling ' + addon);
-    waitForReadyState(isStrict)
-    if (addon === "kubeflow") {
-      sh.echo('kubeflow is no longer supported as a addon');
+    if (error instanceof Error) {
+      core.setFailed(error.message);
     } else {
-      executeCommand(false, 'sudo microk8s enable ' + addon)
-      waitForStorageToBeReady(isStrict, addon)
-      waitForRegistryPvClaim(isStrict, addon)
+      console.log('Unexpected error', error);
     }
-    waitForReadyState(isStrict)
-  }
-}
 
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function enableAddons(addons: string[], isStrict: boolean) {
-  addons.forEach((addon) => {
-    enableAddon(addon, isStrict);
-  });
-
-}
-
-async function waitTillApiServerIsReady(startTimeInMillis: number, isStrict: boolean) {
-  let endTimeInMillis = startTimeInMillis + 80000;
-  let elapsed = Date.now();
-
-  if (endTimeInMillis > elapsed) {
-    await delay(endTimeInMillis - elapsed)
-    waitForReadyState(isStrict)
   }
 
-}
-
-function isStrictMode(channel: string): boolean {
-  return channel.includes("-strict")
-}
-
-function executeCommand(isSilent: boolean, command: string) {
-  return sh.exec(command, { silent: isSilent }).code;
-}
-
-function waitForStorageToBeReady(isSilent: boolean, addon: string) {
-  if (addon === "hostpath-storage") {
-    sh.echo('Waiting for hostpath-storage to be ready ');
-    executeCommand(isSilent, "sudo microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system --timeout=90s")
-  }
-}
-
-function waitForRegistryPvClaim(isSilent: boolean, addon: string) {
-  if (addon === "registry") {
-    sh.echo('Waiting for registry volume to be bound');
-    executeCommand(isSilent, "sudo microk8s  kubectl wait --for=jsonpath='{.status.phase}'=Bound pvc/registry-claim -n container-registry --timeout=90s")
-  }
 }
 
 run();
