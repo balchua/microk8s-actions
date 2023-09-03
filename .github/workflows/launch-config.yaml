@@ -41,11 +41,6 @@ jobs:
           sudo microk8s status --addon hostpath-storage --wait-ready | grep enabled
           sudo microk8s status --addon registry --wait-ready | grep enabled
 
-      - name: Check User
-        run: |
-          id
-          sg microk8s -c 'microk8s status'
-
       - name: Check push to local registry
         run: |
           sudo microk8s kubectl wait --for=jsonpath='{.status.phase}'=Bound pvc/registry-claim -n container-registry --timeout=90s
