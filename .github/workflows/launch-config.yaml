@@ -19,7 +19,7 @@ jobs:
           docker pull alpine:edge
           docker save alpine:edge > $HOME/sideload/alpine-edge.tar
 
-      - uses: balchua/microk8s-actions@feat/launch_config
+      - uses: balchua/microk8s-actions@master
         with:
           channel: "1.28/stable"
           launch-configuration: "$GITHUB_WORKSPACE/microk8s-config.yaml"
