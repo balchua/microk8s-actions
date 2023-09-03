@@ -80,7 +80,12 @@ Example:
 
 New from `v0.4.0`
 
-**Optional** Side loading images automatically loads image tarballs to MicroK8s Containerd.  You can use this to automatically load your images into MicroK8s, without using a registry .  Example: `/home/runner/sideload/`
+**Optional** 
+
+Side load images automatically loads image tarballs to MicroK8s Containerd.  
+You can use this to automatically load your images into MicroK8s, without using a registry .  
+
+Example: `/home/runner/sideload/`
 
 Please note that this is applicable during MicroK8s installation.
 
@@ -166,7 +171,9 @@ For more information regarding kubeflow addon check this [link](https://microk8s
 
 ## Building
 
-The main program is a Typescript, located in [src/index.ts](src/index.ts).  Before pushing the code to Github, you should compile the source to ES6.
+The main program is a Typescript, located in [src](src/).  
+
+Before pushing the code to Github, you should compile the source to ES6.
 
 ```shell
 $ npm run build
