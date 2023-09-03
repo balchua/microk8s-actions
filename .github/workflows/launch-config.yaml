@@ -1,11 +1,11 @@
-name: Test Microk8s
+name: Test Launch Configuration Microk8s
 on: [push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    name: A job to install MicroK8s
+    name: A job to install MicroK8s with launch configurations
     steps:
       - uses: actions/checkout@v3
         with:
