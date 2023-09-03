@@ -16,7 +16,7 @@ jobs:
         with:
           channel: "1.28/stable"
           launch-configuration: "$HOME/microk8s-config.yaml"
-          sideload-image-path: "$HOME/sideload/"
+          sideload-images-path: "$HOME/sideload/"
 
       - name: Check Side loaded images
         run: |
