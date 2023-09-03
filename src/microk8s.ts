@@ -40,12 +40,12 @@ export class MicroK8s {
         // Create microk8s group
         sh.echo("creating microk8s group.");
         if (!this.isStrictMode) {
-            util.executeCommand(false, "sudo usermod -a -G microk8s $USER")
+            util.executeCommand(false, "sudo usermod -a -G microk8s $USER");
         } else {
-            util.executeCommand(false, "sudo usermod -a -G snap_microk8s $USER")
+            util.executeCommand(false, "sudo usermod -a -G snap_microk8s $USER");
         }
         sh.echo("creating default kubeconfig location.");
-        util.executeCommand(false, "mkdir -p '$HOME/.kube/'")
+        util.executeCommand(false, "mkdir -p '$HOME/.kube/'");
         sh.echo("Generating kubeconfig file to default location.");
         util.executeCommand(false, "sudo microk8s kubectl config view --raw > $HOME/.kube/config")
         sh.echo("Change default location ownership.");
@@ -93,11 +93,11 @@ export class MicroK8s {
         console.log(`'install microk8s [channel: ${this.channel}] [strict mode: ${this.isStrictMode}]'`)
         sh.echo("install microk8s [channel: " + this.channel + "] [strict mode: " + this.isStrictMode + "]")
         try {
-            this.prepareUserEnvironment();
             this.setupLaunchConfiguration();
             this.sideloadImages();
             this.generateMicrok8sInstallCommand();
             util.executeCommand(false, this.command);
+            this.prepareUserEnvironment();
             this.waitTillApiServerIsReady();
         } catch (error) {
             this.failToInstall(error);
