@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s with strict confinement
     steps:
-    - uses: balchua/microk8s-actions@master
-      with:
-        channel: '1.26-strict/stable'
-        devMode: 'true'
-        addons: '["rbac", "dns", "metrics-server", "hostpath-storage", "registry"]'
-    - name: Test MicroK8s commands
-      id: microk8s-commands
-      run: |
-        set -ex
-        sudo microk8s status        
-        sudo microk8s kubectl get pods -A
+      - uses: balchua/microk8s-actions@master
+        with:
+          channel: "1.26-strict/stable"
+          devMode: "true"
+          addons: '[ "dns", "hostpath-storage"]'
+      - name: Test MicroK8s commands
+        id: microk8s-commands
+        run: |
+          set -ex
+          sudo microk8s status        
+          sudo microk8s kubectl get pods -A
