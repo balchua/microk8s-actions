@@ -3,12 +3,16 @@ on: [push]
 
 jobs:
   test:
+    strategy:
+      matrix:
+        version:
+          ["1.25-strict/stable", "1.26-strict/stable", "1.27-strict/stable"]
     runs-on: ubuntu-latest
     name: A job to install MicroK8s with strict confinement
     steps:
       - uses: balchua/microk8s-actions@master
         with:
-          channel: "1.26-strict/stable"
+          channel: "${{ matrix.version }}"
           devMode: "true"
           addons: '[ "dns", "hostpath-storage"]'
       - name: Test MicroK8s commands
