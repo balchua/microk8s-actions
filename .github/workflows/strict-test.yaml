@@ -8,9 +8,11 @@ jobs:
         version:
           ["1.25-strict/stable", "1.26-strict/stable", "1.27-strict/stable"]
     runs-on: ubuntu-latest
+    env:
+      GITHUB_SHA: ${{ github.sha }}
     name: A job to install MicroK8s with strict confinement
     steps:
-      - uses: balchua/microk8s-actions@fix/pv-timeout
+      - uses: balchua/microk8s-actions@${{ env.GITHUB_SHA }}
         with:
           channel: "${{ matrix.version }}"
           devMode: "true"
