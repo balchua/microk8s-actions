@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s with strict confinement
     steps:
-      - uses: balchua/microk8s-actions@${{ github.sha }}
+      - uses: balchua/microk8s-actions@fix/pv-timeout
         with:
           channel: "${{ matrix.version }}"
           devMode: "true"

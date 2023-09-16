@@ -19,7 +19,7 @@ jobs:
           docker pull alpine:edge
           docker save alpine:edge > $HOME/sideload/alpine-edge.tar
 
-      - uses: balchua/microk8s-actions@${{ github.sha }}
+      - uses: balchua/microk8s-actions@fix/pv-timeout
         with:
           channel: "1.28/stable"
           launch-configuration: "$GITHUB_WORKSPACE/microk8s-config.yaml"
