@@ -4,11 +4,9 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_SHA: ${{ github.sha }}
     name: A job to install MicroK8s
     steps:
-      - uses: balchua/microk8s-actions@${{ env.GITHUB_SHA }}
+      - uses: balchua/microk8s-actions@fix/pv_timeout
         with:
           channel: "1.26/stable"
           addons: '["rbac", "dns", "hostpath-storage", "registry"]'
