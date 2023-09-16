@@ -4,7 +4,6 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-
     name: A job to install MicroK8s with launch configurations
     steps:
       - uses: actions/checkout@v3
@@ -19,7 +18,7 @@ jobs:
           docker pull alpine:edge
           docker save alpine:edge > $HOME/sideload/alpine-edge.tar
 
-      - uses: balchua/microk8s-actions@master
+      - uses: balchua/microk8s-actions@fix/pv_timeout
         with:
           channel: "1.28/stable"
           launch-configuration: "$GITHUB_WORKSPACE/microk8s-config.yaml"

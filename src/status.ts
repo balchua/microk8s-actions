@@ -32,13 +32,13 @@ export function verbosewaitForRegistryPvClaim(addon: string) {
 function waitForStorageToBeReady(isSilent: boolean, addon: string) {
     if (addon === "hostpath-storage") {
         sh.echo('Waiting for hostpath-storage to be ready ');
-        util.executeCommand(isSilent, "sudo microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system --timeout=120s")
+        util.executeCommand(isSilent, "sudo microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system --timeout=15m")
     }
 }
 
 function waitForRegistryPvClaim(isSilent: boolean, addon: string) {
     if (addon === "registry") {
         sh.echo('Waiting for registry volume to be bound');
-        util.executeCommand(isSilent, "sudo microk8s  kubectl wait --for=jsonpath='{.status.phase}'=Bound pvc/registry-claim -n container-registry --timeout=120s")
+        util.executeCommand(isSilent, "sudo microk8s  kubectl wait --for=jsonpath='{.status.phase}'=Bound pvc/registry-claim -n container-registry --timeout=15m")
     }
 }
