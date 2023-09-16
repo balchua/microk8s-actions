@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to install MicroK8s
     steps:
-      - uses: balchua/microk8s-actions@master
+      - uses: balchua/microk8s-actions@8f0818d9e4bf539614ab9197c6e347409cf58145
         with:
           channel: "1.26/stable"
           addons: '["rbac", "dns", "hostpath-storage", "registry"]'
